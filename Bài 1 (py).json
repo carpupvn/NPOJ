@@ -1,0 +1,23 @@
+{
+  "id": 1766936181933,
+  "title": "Bài 1 (py)",
+  "desc": "Viết chương trình giải phương trình ax+b=0 với các hệ số a, b nhập từ bàn phím\nNếu vô số nghiệm -> In \"Vô số nghiệm\"\nNếu vô nghiệm -> In \"Vô nghiệm\"\nNếu có 1 nghiệm -> In giá trị của x",
+  "lang": "python",
+  "tests": [
+    {
+      "input": "0\n0",
+      "output": "Vô số nghiệm",
+      "point": 30
+    },
+    {
+      "input": "2.5\n9.5",
+      "output": "-3.8",
+      "point": 40
+    },
+    {
+      "input": "0\n5",
+      "output": "Vô nghiệm",
+      "point": 30
+    }
+  ]
+}

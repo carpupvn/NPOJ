@@ -1,0 +1,28 @@
+{
+  "id": 1766914422430,
+  "title": "Bài 3 (py)",
+  "desc": "Một chú cừu được giao nhiệm vụ ra cánh đồng để thu hoạch ít nhất 𝑥 củ cà rốt và ít nhất 𝑦 củ khoai tây. Vì không biết đếm nên cừu cứ thu hoạch đến trưa rồi mang về nhà mà không biết đã thu hoạch được bao nhiêu củ mỗi loại. Về đến nhà sói giúp cừu đếm lại thì biết được cừu đã thu hoạch được 𝑛 củ cà rốt và 𝑚 củ khoai tây. Viết chương trình nhập 4 số nguyên dương 𝑥, 𝑦, 𝑛, 𝑚. Hãy cho biết cừu có hoàn thành nhiệm vụ không? Nếu hoàn thành nhiệm vụ thì in ra “Yes” ngược lại hãy cho biết cừu thu hoạch không đủ số lượng loại củ nào?\nĐiều kiện để cừu hoàn thành kế hoạch: 𝑛 ≥ 𝑥 và 𝑚 ≥ 𝑦\nNếu không hoàn thành kế hoạch:\n+ Thiếu cà rốt: điều kiện: 𝑛 < 𝑥\n+ Thiếu khoai tây: điều kiện 𝑚 < 𝑦\n",
+  "lang": "python",
+  "tests": [
+    {
+      "input": "10\n3\n25\n4",
+      "output": "Yes",
+      "point": 25
+    },
+    {
+      "input": "10\n6\n25\n4",
+      "output": "Khoai tây",
+      "point": 25
+    },
+    {
+      "input": "10\n6\n6\n4",
+      "output": "Cà rốt\nKhoai tây",
+      "point": 25
+    },
+    {
+      "input": "10\n6\n4\n25",
+      "output": "Cà rốt",
+      "point": 25
+    }
+  ]
+}

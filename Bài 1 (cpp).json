@@ -1,0 +1,23 @@
+{
+  "id": 1766936096404,
+  "title": "Bài 1 (cpp)",
+  "desc": "Viết chương trình giải phương trình ax+b=0 với các hệ số a, b nhập từ bàn phím\nNếu vô số nghiệm -> In \"Vo so nghiem\"\nNếu vô nghiệm -> In \"Vo nghiem\"\nNếu có 1 nghiệm -> In giá trị của x",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "0\n5",
+      "output": "Vo nghiem",
+      "point": 30
+    },
+    {
+      "input": "0\n0",
+      "output": "Vo so nghiem",
+      "point": 30
+    },
+    {
+      "input": "7.8\n-9.3",
+      "output": "1.19231",
+      "point": 40
+    }
+  ]
+}

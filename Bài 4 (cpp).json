@@ -1,0 +1,28 @@
+{
+  "id": 1766936979457,
+  "title": "Bài 4 (cpp)",
+  "desc": "Tính và đưa ra màn hình: Điểm trung bình môn và xếp loại môn Toán.\nNhập điểm thường xuyên (4 điểm hệ số 1); điểm giữa kì (1 điểm hệ số 2); điểm cuối kì (1 điểm hệ số 3). Biết rằng:\n+ điểm TB dưới 5: xếp loại Yếu\n+ điểm TB từ 5 đến dưới 6.5: xếp loại Trung bình\n+ điểm TB từ 6.5 đến dưới 8: xếp loại Khá\n+ điểm TB từ 8 trở lên: xếp loại Giỏi.\n*In ra màn hình tiếng việt không dấu",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "10\n10\n10\n10\n10\n10",
+      "output": "10\nGioi",
+      "point": 25
+    },
+    {
+      "input": "7\n8\n9\n7\n8\n9",
+      "output": "8.22222\nGioi",
+      "point": 25
+    },
+    {
+      "input": "4\n5\n6\n4\n5\n6",
+      "output": "5.22222\nTrung binh",
+      "point": 25
+    },
+    {
+      "input": "1\n2\n3\n1\n2\n3",
+      "output": "2.22222\nYeu",
+      "point": 25
+    }
+  ]
+}
