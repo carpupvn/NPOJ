@@ -95,6 +95,18 @@ function renderAdminProblems() {
     `).join('');
     applyButtonEffects();
 }
+function renderUserProblems() {
+    const grid = document.getElementById('prob-grid');
+    if (!grid) return;
+    grid.innerHTML = problems.map(p => `
+        <div class="card problem-card" onclick="openSolve('${p.id}')">
+            <div class="prob-status">${p.lang.toUpperCase()}</div>
+            <h3 style="margin:10px 0">${p.title}</h3>
+            <p style="color:#94a3b8; font-size:13px; line-height:1.5">${p.desc.substring(0, 100)}...</p>
+        </div>
+    `).join('');
+    applyButtonEffects();
+}
 
 // --- EDITOR (MÀU C++ & AUTO INDENT) ---
 function updateHighlighting() {
@@ -324,4 +336,5 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
