@@ -55,25 +55,26 @@ function applyButtonEffects() {
 async function loadData() {
     try {
         const v = Date.now();
-        // Đọc file list.json ngang hàng với index.html
+        // Đọc danh mục từ file list.json ở ngay thư mục ngoài
         const response = await fetch(`list.json?v=${v}`);
         if (!response.ok) throw new Error("Không tìm thấy list.json");
         const fileNames = await response.json();
         
         problems = [];
         for (const fileName of fileNames) {
-            // Đọc trực tiếp các file bài tập .json ngang hàng
+            // Tải từng file bài tập (đã bỏ chữ problems/)
             const res = await fetch(`${encodeURIComponent(fileName)}?v=${v}`);
             if (res.ok) {
                 const probData = await res.json();
                 problems.push(probData);
             }
         }
+
         renderUserProblems();
         renderAdminProblems();
         applyButtonEffects();
     } catch (e) {
-        console.error("Lỗi tải dữ liệu:", e);
+        console.error("Lỗi tải bài tập:", e);
     }
 }
 
