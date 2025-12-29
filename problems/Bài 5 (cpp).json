@@ -1,0 +1,28 @@
+{
+  "id": 1766938068863,
+  "title": "Bài 5 (cpp)",
+  "desc": "Nhập vào chỉ số điện kế tháng trước (chiso1) và chỉ số điện kế tháng này (chiso2), tính tiền điện tháng này cho hộ, biết rằng:\nMỗi kw trong 60 kw đầu tiên có đơn giá là 5đ, Từ kw thứ 61 đến kw thứ 160 có đơn giá 8đ, Từ kw thứ 161 trở lên có đơn giá 10đ.\n\nVí dụ, ông A có chỉ số điện tháng trước là chiso1 = 1020 và chỉ số điện tháng này là chiso2 = 1070, lượng điện tiêu thụ tính ra là Ldtt = 1070 – 1020 = 50, do lượng điện tiêu thụ < 60 nên số tiền sẽ là:\nTien = 50*5= 250đ.\nNếu chiso2 = 1150 thì Ldtt = 1150 – 1020 = 130, do lượng điện tiêu thụ vượt quá 60 kw nhưng chưa vượt qúa 160 kw nên tiền điện được tính là:\nTien = 60*5 + (130 - 60)*8 = 860 đ.\nNếu chiso2 = 1234, thì Ldtt = 1234 – 1020 = 214, do lượng điện tiêu thụ vượt quá 160 kw nên tiền điện sẽ là:\nTien = 60*5 + 100*8 + (214 - 160)*10 = 300 + 800 + 54*10 = 1640đ.\n",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "1020\n1070",
+      "output": "250",
+      "point": 20
+    },
+    {
+      "input": "1020\n1150",
+      "output": "860",
+      "point": 20
+    },
+    {
+      "input": "1020\n1234",
+      "output": "1640",
+      "point": 20
+    },
+    {
+      "input": "1000\n2000",
+      "output": "9500",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": 1766908271539,
+  "title": "Bài 2(cpp)",
+  "desc": "Giải phương trình bậc hai: ax2 + bx + c = 0 với a, b, c nhập từ bàn phím.\nLƯU Ý:\nCó 2 nghiệm: In ra màn hình lần lượt 2 kết quả\nCó 1 nghiệm: In ra màn hình 1 kết quả\nVô nghiệm: In ra màn hình \"Vo nghiem\"\n",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "3\n2\n-1",
+      "output": "0.333333\n-1",
+      "point": 20
+    },
+    {
+      "input": "1\n2\n-3",
+      "output": "1\n-3",
+      "point": 20
+    },
+    {
+      "input": "1\n2\n3",
+      "output": "Vo nghiem",
+      "point": 15
+    },
+    {
+      "input": "70\n80\n90",
+      "output": "Vo nghiem",
+      "point": 15
+    },
+    {
+      "input": "1\n2\n1",
+      "output": "-1",
+      "point": 15
+    },
+    {
+      "input": "1\n-10\n25",
+      "output": "5",
+      "point": 15
+    },
+    {
+      "input": "3\n2\n-1",
+      "output": "-1\n0.333333",
+      "point": 20
+    },
+    {
+      "input": "1\n2\n-3",
+      "output": "-3\n1",
+      "point": 20
+    }
+  ]
+}
