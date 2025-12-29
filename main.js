@@ -55,29 +55,29 @@ function applyButtonEffects() {
 async function loadData() {
     try {
         const v = Date.now();
-        // Đọc danh mục từ file list.json ở ngay thư mục ngoài
+        // Đọc danh mục bài tập từ list.json
         const response = await fetch(`list.json?v=${v}`);
         if (!response.ok) throw new Error("Không tìm thấy list.json");
         const fileNames = await response.json();
         
         problems = [];
         for (const fileName of fileNames) {
-            // Tải từng file bài tập (đã bỏ chữ problems/)
+            // Tải từng bài tập từ các file JSON ngang hàng
             const res = await fetch(`${encodeURIComponent(fileName)}?v=${v}`);
             if (res.ok) {
                 const probData = await res.json();
                 problems.push(probData);
             }
         }
-
         renderUserProblems();
         renderAdminProblems();
         applyButtonEffects();
     } catch (e) {
         console.error("Lỗi tải bài tập:", e);
+        const grid = document.getElementById('prob-grid');
+        if(grid) grid.innerHTML = "<p style='color:#f43f5e'>Lỗi: Không thể tải bài tập từ GitHub.</p>";
     }
 }
-
 function renderAdminProblems() {
     const list = document.getElementById('admin-list');
     if (!list) return;
@@ -324,3 +324,4 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
