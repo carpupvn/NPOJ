@@ -54,25 +54,26 @@ function applyButtonEffects() {
 // --- QUẢN LÝ DỮ LIỆU ---
 async function loadData() {
     try {
-        // Đọc danh sách file từ list.json thay vì gọi server.ps1
-        const response = await fetch('problems/list.json');
+        const v = Date.now();
+        // Đọc file list.json ngang hàng với index.html
+        const response = await fetch(`list.json?v=${v}`);
+        if (!response.ok) throw new Error("Không tìm thấy list.json");
         const fileNames = await response.json();
         
         problems = [];
         for (const fileName of fileNames) {
-            // Fetch từng file bài tập dựa trên danh sách
-            const res = await fetch(`problems/${encodeURIComponent(fileName)}`);
+            // Đọc trực tiếp các file bài tập .json ngang hàng
+            const res = await fetch(`${encodeURIComponent(fileName)}?v=${v}`);
             if (res.ok) {
                 const probData = await res.json();
                 problems.push(probData);
             }
         }
-
         renderUserProblems();
         renderAdminProblems();
         applyButtonEffects();
     } catch (e) {
-        console.error("Lỗi: Không thể tải danh sách bài tập.", e);
+        console.error("Lỗi tải dữ liệu:", e);
     }
 }
 
