@@ -89,3 +89,59 @@ button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; pa
 .problem-card:hover h3 {
     color: var(--primary);
 }
+/* Tối ưu Mobile */
+@media (max-width: 768px) {
+    /* 1. Sidebar chuyển thành thanh điều hướng dưới hoặc ẩn */
+    .app-layout {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar div, .sidebar button[onclick*="location.reload"] {
+        display: none; /* Ẩn logo và nút đăng xuất trên mobile để tiết kiệm chỗ */
+    }
+
+    .sidebar nav {
+        flex-direction: row !important;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    /* 2. IDE Layout: Chuyển từ ngang sang dọc */
+    .ide-container {
+        grid-template-columns: 1fr !important; /* Ép về 1 cột */
+        height: auto !important;
+        gap: 10px;
+    }
+
+    .ide-left {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .editor-wrapper {
+        height: 350px !important; /* Tăng chiều cao vùng gõ code trên mobile */
+    }
+
+    /* 3. Danh sách bài tập (Grid) */
+    .grid {
+        grid-template-columns: 1fr !important; /* Mỗi bài tập 1 hàng */
+    }
+
+    /* 4. Font chữ */
+    h1 { font-size: 2.5rem !important; }
+    .card { padding: 20px !important; }
+}
