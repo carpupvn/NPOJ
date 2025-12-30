@@ -7,10 +7,48 @@
 * { box-sizing: border-box; transition: all 0.2s ease; }
 body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
 
-.view { display: none; opacity: 0; transform: translateY(10px); height: 100%; }
-.view.active { display: block !important; opacity: 1; transform: translateY(0); }
+/* Sửa lại phần View để không bị lệch */
+.view { 
+    display: none; 
+    opacity: 0; 
+    /* Bỏ transform: translateY(10px) ở đây vì nó làm lệch màn hình fixed */
+    height: 100%; 
+    transition: opacity 0.3s ease;
+}
+
+/* Khi active, nếu là màn hình start thì dùng flex, các màn hình khác dùng block */
+.view.active { 
+    display: block !important; 
+    opacity: 1; 
+}
+
+/* Riêng màn hình mở đầu cần căn giữa tuyệt đối */
+#view-start.active {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+}
+
 .hidden { display: none !important; }
 
+/* Tối ưu thêm cho Mobile */
+@media (max-width: 768px) {
+    .ide-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .ide-left, .ide-right {
+        width: 100%;
+    }
+
+    /* Giúp vùng soạn thảo code cao hơn trên điện thoại */
+    .editor-wrapper {
+        min-height: 300px;
+    }
+}
 /* Buttons */
 button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; padding: 10px 20px; font-size: 13px; }
 .btn-primary { background: var(--primary); color: white; }
@@ -172,3 +210,4 @@ button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; pa
 .view.active {
     display: block; /* Hoặc flex tùy vào id, nhưng quan trọng là reset transform nếu cần */
 }
+
