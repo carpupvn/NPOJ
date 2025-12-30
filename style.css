@@ -145,3 +145,30 @@ button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; pa
     h1 { font-size: 2.5rem !important; }
     .card { padding: 20px !important; }
 }
+/* Bổ sung để fix tràn trang trên Mobile */
+@media (max-width: 768px) {
+    body {
+        overflow-y: auto; /* Cho phép cuộn trang tổng thể trên mobile */
+        height: auto;
+    }
+    
+    .main-body {
+        padding: 15px;
+        overflow-y: visible; /* Để container bên ngoài lo việc cuộn */
+    }
+
+    .ide-right {
+        grid-template-rows: 400px 300px; /* Cố định chiều cao editor và terminal trên mobile */
+    }
+
+    /* Fix các button bị quá nhỏ khó bấm */
+    button {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+}
+
+/* Fix lỗi lệch cho các view khác */
+.view.active {
+    display: block; /* Hoặc flex tùy vào id, nhưng quan trọng là reset transform nếu cần */
+}
