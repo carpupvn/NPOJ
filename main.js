@@ -4,39 +4,32 @@ let activeProb = null;
 // --- QUẢN LÝ GIAO DIỆN & HIỆU ỨNG CHUYỂN TRANG ---
 function switchView(v) {
     const allViews = document.querySelectorAll('.view');
-    const appContent = document.getElementById('app-content');
     const viewStart = document.getElementById('view-start');
 
-    // 1. Ẩn tất cả các view và reset display để không cản trở tương tác
+    // 1. Ẩn tất cả và tắt tương tác ngay lập tức
     allViews.forEach(view => {
         view.classList.remove('active');
         view.classList.add('hidden');
         view.style.display = 'none'; 
     });
 
-    // 2. Xử lý logic hiển thị
+    // 2. Hiển thị view mục tiêu
     if (v === 'start') {
-        appContent.classList.add('hidden');
+        viewStart.style.display = 'flex';
         viewStart.classList.remove('hidden');
-        viewStart.style.display = 'flex'; // Hiện lại màn hình bắt đầu
         setTimeout(() => viewStart.classList.add('active'), 10);
     } else {
-        // Cất hẳn màn hình Start để bấm được các nút bên dưới
-        viewStart.classList.add('hidden');
-        viewStart.style.display = 'none';
-        
-        appContent.classList.remove('hidden');
+        document.getElementById('app-content').classList.remove('hidden');
         const target = document.getElementById('view-' + v);
         if (target) {
-            target.classList.remove('hidden');
             target.style.display = 'block';
+            target.classList.remove('hidden');
             setTimeout(() => target.classList.add('active'), 10);
         }
     }
 
     if (v === 'user' || v === 'admin') loadData();
 }
-
 // --- HIỆU ỨNG HOẠT ẢNH CHO TẤT CẢ NÚT BẤM ---
 function applyButtonEffects() {
     const btns = document.querySelectorAll('button');
@@ -286,6 +279,7 @@ function openSolve(id) {
     
     updateHighlighting();
     switchView('solve');
+    window.scrollTo(0, 0);
 
     // Tự động cuộn lên đầu trang khi mở bài mới trên mobile
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -361,6 +355,7 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
 
 
