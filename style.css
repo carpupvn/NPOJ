@@ -11,8 +11,8 @@ body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color
 .view { 
     display: none; 
     opacity: 0; 
-    /* Bỏ transform: translateY(10px) ở đây vì nó làm lệch màn hình fixed */
     height: 100%; 
+    pointer-events: none; /* Click sẽ xuyên qua nếu màn hình đang ẩn */
     transition: opacity 0.3s ease;
 }
 
@@ -20,6 +20,7 @@ body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color
 .view.active { 
     display: block !important; 
     opacity: 1; 
+    pointer-events: auto; /* Chỉ cho phép click khi màn hình hiện lên */
 }
 
 /* Riêng màn hình mở đầu cần căn giữa tuyệt đối */
@@ -27,7 +28,9 @@ body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color
     display: flex !important;
     align-items: center;
     justify-content: center;
-    transform: none !important;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 9999;
 }
 
 .hidden { display: none !important; }
@@ -210,4 +213,5 @@ button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; pa
 .view.active {
     display: block; /* Hoặc flex tùy vào id, nhưng quan trọng là reset transform nếu cần */
 }
+
 
