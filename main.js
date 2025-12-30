@@ -52,29 +52,30 @@ function applyButtonEffects() {
 
 // --- QUẢN LÝ DỮ LIỆU ---
 async function loadData() {
+    const grid = document.getElementById('prob-grid');
+    if(grid) grid.innerHTML = "<div style='grid-column:1/-1; text-align:center; padding:20px; color:#3b82f6;'>Đang tải dữ liệu...</div>";
+
     try {
         const v = Date.now();
-        // Đọc danh mục bài tập từ list.json
         const response = await fetch(`list.json?v=${v}`);
         if (!response.ok) throw new Error("Không tìm thấy list.json");
         const fileNames = await response.json();
         
-        problems = [];
-        for (const fileName of fileNames) {
-            // Tải từng bài tập từ các file JSON ngang hàng
-            const res = await fetch(`${encodeURIComponent(fileName)}?v=${v}`);
-            if (res.ok) {
-                const probData = await res.json();
-                problems.push(probData);
-            }
-        }
+        // Tải tất cả file JSON cùng một lúc
+        const promises = fileNames.map(fileName => 
+            fetch(`${encodeURIComponent(fileName)}?v=${v}`)
+                .then(res => res.ok ? res.json() : null)
+        );
+        
+        const results = await Promise.all(promises);
+        problems = results.filter(p => p !== null); // Loại bỏ các bài bị lỗi tải
+        
         renderUserProblems();
         renderAdminProblems();
         applyButtonEffects();
     } catch (e) {
         console.error("Lỗi tải bài tập:", e);
-        const grid = document.getElementById('prob-grid');
-        if(grid) grid.innerHTML = "<p style='color:#f43f5e'>Lỗi: Không thể tải bài tập từ GitHub.</p>";
+        if(grid) grid.innerHTML = "<p style='color:#f43f5e; grid-column:1/-1; text-align:center;'>Lỗi: Không thể kết nối dữ liệu.</p>";
     }
 }
 function renderAdminProblems() {
@@ -355,6 +356,7 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
 
 
