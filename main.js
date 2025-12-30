@@ -339,6 +339,15 @@ window.onload = () => {
             const layer = document.getElementById('highlighting-layer');
             if(layer) layer.scrollTop = ed.scrollTop;
         };
+
+        // Thêm đoạn này vào đây
+        ed.addEventListener('focus', function() {
+            if (window.innerWidth < 768) {
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
+        });
     }
     applyButtonEffects(); 
 };
