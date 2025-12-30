@@ -286,6 +286,9 @@ function openSolve(id) {
     
     updateHighlighting();
     switchView('solve');
+
+    // Tự động cuộn lên đầu trang khi mở bài mới trên mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openEditor(id = null) {
@@ -346,9 +349,10 @@ window.onload = () => {
             if(layer) layer.scrollTop = ed.scrollTop;
         };
 
-        // Thêm đoạn này vào đây
+        // Tối ưu cho Mobile: Cuộn khung nhìn khi gõ
         ed.addEventListener('focus', function() {
             if (window.innerWidth < 768) {
+                // Đợi bàn phím ảo hiện lên rồi mới cuộn
                 setTimeout(() => {
                     this.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 300);
@@ -357,6 +361,7 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
 
 
