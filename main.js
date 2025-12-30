@@ -4,31 +4,36 @@ let activeProb = null;
 // --- QUẢN LÝ GIAO DIỆN & HIỆU ỨNG CHUYỂN TRANG ---
 function switchView(v) {
     const allViews = document.querySelectorAll('.view');
+    const appContent = document.getElementById('app-content');
+    const viewStart = document.getElementById('view-start');
+
+    // 1. Ẩn tất cả các view ngay lập tức để giải phóng giao diện
     allViews.forEach(view => {
         view.classList.remove('active');
-        setTimeout(() => view.classList.add('hidden'), 300);
+        view.classList.add('hidden');
     });
 
-    setTimeout(() => {
-        const target = document.getElementById('view-' + v);
-        const appContent = document.getElementById('app-content');
-        const viewStart = document.getElementById('view-start');
-
-        if (v === 'start') {
-            appContent.classList.add('hidden');
-            viewStart.classList.remove('hidden');
-            setTimeout(() => viewStart.classList.add('active'), 50);
-        } else {
-            viewStart.classList.add('hidden');
-            appContent.classList.remove('hidden');
-            if (target) {
-                target.classList.remove('hidden');
-                setTimeout(() => target.classList.add('active'), 50);
-            }
-        }
+    // 2. Xử lý logic hiển thị
+    if (v === 'start') {
+        appContent.classList.add('hidden');
+        viewStart.classList.remove('hidden');
+        viewStart.style.display = 'flex'; // Đảm bảo flex để căn giữa
+        setTimeout(() => viewStart.classList.add('active'), 10);
+    } else {
+        // Nếu vào User hoặc Admin, phải cất hẳn màn hình Start đi
+        viewStart.classList.add('hidden');
+        viewStart.style.display = 'none';
         
-        if (v === 'user' || v === 'admin') loadData();
-    }, 350);
+        appContent.classList.remove('hidden');
+        const target = document.getElementById('view-' + v);
+        if (target) {
+            target.classList.remove('hidden');
+            setTimeout(() => target.classList.add('active'), 10);
+        }
+    }
+
+    // 3. Load dữ liệu
+    if (v === 'user' || v === 'admin') loadData();
 }
 
 // --- HIỆU ỨNG HOẠT ẢNH CHO TẤT CẢ NÚT BẤM ---
@@ -351,6 +356,7 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
 
 
