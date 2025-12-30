@@ -7,20 +7,21 @@ function switchView(v) {
     const appContent = document.getElementById('app-content');
     const viewStart = document.getElementById('view-start');
 
-    // 1. Ẩn tất cả các view ngay lập tức để giải phóng giao diện
+    // 1. Ẩn tất cả các view và reset display để không cản trở tương tác
     allViews.forEach(view => {
         view.classList.remove('active');
         view.classList.add('hidden');
+        view.style.display = 'none'; 
     });
 
     // 2. Xử lý logic hiển thị
     if (v === 'start') {
         appContent.classList.add('hidden');
         viewStart.classList.remove('hidden');
-        viewStart.style.display = 'flex'; // Đảm bảo flex để căn giữa
+        viewStart.style.display = 'flex'; // Hiện lại màn hình bắt đầu
         setTimeout(() => viewStart.classList.add('active'), 10);
     } else {
-        // Nếu vào User hoặc Admin, phải cất hẳn màn hình Start đi
+        // Cất hẳn màn hình Start để bấm được các nút bên dưới
         viewStart.classList.add('hidden');
         viewStart.style.display = 'none';
         
@@ -28,11 +29,11 @@ function switchView(v) {
         const target = document.getElementById('view-' + v);
         if (target) {
             target.classList.remove('hidden');
+            target.style.display = 'block';
             setTimeout(() => target.classList.add('active'), 10);
         }
     }
 
-    // 3. Load dữ liệu
     if (v === 'user' || v === 'admin') loadData();
 }
 
@@ -356,6 +357,7 @@ window.onload = () => {
     }
     applyButtonEffects(); 
 };
+
 
 
 
