@@ -2,109 +2,85 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPOJ - Hệ Thống Học Lập Trình</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NPOJ - Hệ thống luyện code</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 </head>
 <body>
+    <section id="view-start" class="view active" style="display: flex !important; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 9999;">
+        <div class="card" style="padding: 60px 40px; width: 90%; max-width: 450px; text-align: center; background: var(--card); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div style="background: var(--primary); width: 80px; height: 80px; border-radius: 20px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);">
+                <span style="font-size: 2.5rem; font-weight: 900; color: white;">N</span>
+            </div>
 
-    <section id="view-start" class="view active">
-        <div class="card start-card">
-            <div class="logo-box">NP</div>
-            <h1>Chào mừng trở lại!</h1>
-            <p style="color: var(--text-muted); margin-bottom: 32px;">Nhập mã bài tập để truy cập nội dung</p>
-        
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-                <input type="text" id="exercise-code" class="input-modern" placeholder="Mã số bài tập..." autocomplete="off">
-                <button class="btn-primary" onclick="accessByCode()" style="padding: 14px;">
-                    TRUY CẬP BÀI TẬP
-                </button>
+            <h1 style="font-size: 3rem; margin: 0; color: white; letter-spacing: -2px;">NPOJ</h1>
+            <p style="color: #94a3b8; margin: 10px 0 40px 0; font-size: 1.1rem;">Hệ thống lập trình hiện đại</p>
+
+            <div id="login-container" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="exercise-code" class="input-modern" placeholder="Nhập mã bài tập (VD: 1000)" style="text-align: center; font-size: 1.1rem; border: 2px solid #334155;">
+                <button id="btn-access" class="btn-primary" style="padding: 16px; font-weight: bold; font-size: 1rem;" onclick="accessByCode()">VÀO HỌC NGAY</button>
                 <div id="loader" style="display: none; margin-top: 10px;">
-                    <small style="color: var(--primary)">Đang đồng bộ dữ liệu...</small>
+                    <small style="color: var(--primary)">Đang kiểm tra mã...</small>
                 </div>
-                <hr style="border: none; border-top: 1px solid var(--border); margin: 10px 0;">
-                <button class="btn-outline" onclick="authAdmin()">QUẢN TRỊ VIÊN</button>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 10px 0;">
+                <button class="btn-outline" style="padding: 12px; font-size: 0.9rem; opacity: 0.7;" onclick="authAdmin()">QUẢN TRỊ VIÊN</button>
             </div>
         </div>
     </section>
 
     <div id="app-content" class="app-layout hidden">
         <aside class="sidebar">
-            <div style="font-size: 20px; font-weight: 800; color: var(--primary); letter-spacing: 1px; margin-bottom: 40px; display: flex; align-items: center; gap: 10px;">
-                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px;"></div>
-                NPOJ
-            </div>
-            
-            <nav style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
-                <button class="btn-outline" onclick="switchView('user')" style="justify-content: flex-start;">
-                    <span>📚</span> <span>Bài Tập</span>
-                </button>
-                <button class="btn-outline" onclick="authAdmin()" style="justify-content: flex-start;">
-                    <span>🛠</span> <span>Quản Trị</span>
-                </button>
+            <div style="font-size:1.8rem; font-weight:900; color:var(--primary); margin-bottom:40px">NPOJ</div>
+            <nav style="display:flex; flex-direction:column; gap:10px">
+                <button class="btn-outline" id="nav-prob" style="justify-content:flex-start" onclick="switchView('user')">📚 Bài tập</button>
+                <button class="btn-outline" style="justify-content:flex-start" onclick="authAdmin()">🛠 Quản lý</button>
             </nav>
-
-            <div style="margin-bottom: 24px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border);">
-                <small style="color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600;">ĐANG HỌC:</small>
-                <span id="display-ma" style="color: var(--primary); font-family: monospace; font-weight: 800; font-size: 16px;">----</span>
+            <div id="current-code-display" style="margin-top: 20px; font-size: 0.8rem; color: #64748b; padding: 10px; border-top: 1px solid #334155;">
+                MÃ: <span id="display-ma" style="color: var(--primary); font-weight: bold;">---</span>
             </div>
-
-            <button class="btn-outline" onclick="logout()" style="color: var(--danger); border-color: rgba(244, 63, 94, 0.2);">
-                <span>⏻</span> <span>Thoát</span>
-            </button>
+            <button class="btn-outline" style="margin-top:auto; color:#f43f5e" onclick="logout()">⏻ Đăng xuất</button>
         </aside>
 
         <main class="main-body">
-            
             <section id="view-user" class="view">
-                <header style="margin-bottom: 32px;">
-                    <h2 style="font-size: 24px; margin: 0 0 8px 0;">Danh sách bài tập</h2>
-                    <p style="color: var(--text-muted); margin: 0;">Chọn một thử thách để bắt đầu lập trình.</p>
-                </header>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                    <h2>Danh sách bài tập</h2>
+                </div>
                 <div id="prob-grid" class="grid">
                     </div>
             </section>
 
             <section id="view-solve" class="view">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                    <button class="btn-outline" onclick="switchView('user')">← Trở lại</button>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-primary" onclick="runCode()">
-                            <span>🚀</span> NỘP BÀI CHẤM ĐIỂM
-                        </button>
-                    </div>
-                </div>
-
+                <button class="btn-outline" onclick="switchView('user')" style="margin-bottom:15px">← Quay lại danh sách</button>
                 <div class="ide-container">
                     <div class="ide-left">
-                        <div class="card">
-                            <div id="lang-tag" style="display: inline-block; padding: 4px 10px; background: var(--primary); border-radius: 6px; font-size: 10px; font-weight: 800; color: white; margin-bottom: 16px;">CPP</div>
-                            <h2 id="solve-title" style="margin: 0 0 16px 0; font-size: 22px; color: var(--primary);"></h2>
-                            <div id="solve-desc" style="line-height: 1.7; color: #cbd5e1; white-space: pre-wrap;"></div>
+                        <div class="card" style="flex:1">
+                            <h2 id="solve-title" style="margin:0; color:var(--primary)"></h2>
+                            <div id="solve-desc" style="color:#94a3b8; line-height:1.6; font-size:14px; margin-top:15px"></div>
                         </div>
-                        
-                        <div class="card" style="border-left: 4px solid var(--primary);">
-                            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: var(--text-muted);">KẾT QUẢ CHẤM</h4>
-                            <div id="judge-status" style="font-size: 18px; font-weight: 800; color: var(--text-muted);">Sẵn sàng.</div>
+                        <div class="card">
+                            <small style="color:#64748b">TRẠNG THÁI</small>
+                            <div id="judge-status" style="font-weight:bold; margin-top:5px">Sẵn sàng.</div>
                         </div>
                     </div>
-
                     <div class="ide-right">
                         <div class="editor-section">
                             <div class="pane-header">
-                                <span>CODE EDITOR</span>
-                                <span style="opacity: 0.5;">tab = 4 spaces</span>
+                                <span id="lang-tag" class="btn-primary" style="padding:2px 8px; border-radius:4px">PYTHON</span>
+                                <div style="display:flex; gap:10px">
+                                    <button class="btn-success" onclick="runCode()">NỘP BÀI</button>
+                                </div>
                             </div>
                             <div class="editor-wrapper">
                                 <pre id="highlighting-layer"><code id="highlighting-content"></code></pre>
-                                <textarea id="code-editor" spellcheck="false"></textarea>
+                                <textarea id="code-editor" spellcheck="false" oninput="updateHighlighting()" onkeydown="handleTab(event)"></textarea>
                             </div>
                         </div>
-
                         <div class="editor-section">
-                            <div class="pane-header">TERMINAL OUTPUT</div>
+                            <div class="pane-header">TERMINAL</div>
                             <div id="terminal" class="terminal-body"></div>
                         </div>
                     </div>
@@ -112,22 +88,40 @@
             </section>
 
             <section id="view-admin" class="view">
-                <header style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-                    <h2>Quản lý bài tập</h2>
-                    <button class="btn-success" onclick="createNewProblem()">+ Thêm bài mới</button>
-                </header>
-                <div id="admin-prob-list" class="grid">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px">
+                    <h2>Kho bài tập</h2>
+                    <button class="btn-primary" onclick="openEditor()">+ Tạo bài</button>
+                </div>
+                <div id="admin-list"></div>
+            </section>
+
+            <section id="view-editor" class="view">
+                <button class="btn-outline" onclick="switchView('admin')" style="margin-bottom:15px">← Hủy</button>
+                <div class="ide-container">
+                    <div class="ide-left">
+                        <div class="card" style="flex:1">
+                            <h3 style="margin:0 0 15px 0">Cấu hình</h3>
+                            <input type="text" id="adm-title" class="input-modern" placeholder="Tên bài">
+                            <textarea id="adm-desc" class="input-modern" placeholder="Mô tả" style="height:250px"></textarea>
+                            <select id="adm-lang" class="input-modern">
+                                <option value="python">Python 3</option>
+                                <option value="cpp">C++</option>
+                            </select>
+                        </div>
+                        <button class="btn-success" style="padding:20px" onclick="saveProblem()">LƯU & XUẤT JSON</button>
                     </div>
+                    <div class="ide-right" style="grid-template-rows: 1fr">
+                        <div class="editor-section">
+                            <div class="pane-header">
+                                <span>TEST CASES</span>
+                                <button class="btn-primary" onclick="addTestUI()">+ Thêm</button>
+                            </div>
+                            <div id="test-container" style="padding:20px; overflow-y:auto"></div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
-    </div>
-
-    <div id="congrats-modal">
-        <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
-        <h2 style="color: var(--success); font-size: 28px; margin-bottom: 10px;">HOÀN THÀNH XUẤT SẮC!</h2>
-        <p style="font-size: 18px; color: var(--text-main); margin-bottom: 5px;">Bạn đã đạt <b>100/100</b> điểm</p>
-        <p style="color: var(--text-muted); margin-bottom: 30px;">Tất cả các test case đều đã vượt qua.</p>
-        <button class="btn-primary" onclick="this.parentElement.classList.remove('active')" style="width: 100%;">TIẾP TỤC HỌC</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
@@ -135,5 +129,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script src="main.js"></script>
+    <div id="congrats-modal">
+        <h2>🌟 TUYỆT VỜI! 🌟</h2>
+        <p>Bạn đã đạt điểm tối đa: <b>100/100</b></p>
+        <p>Chúc mừng bạn đã chinh phục thành công thử thách này!</p>
+        <p style="font-size: 12px; margin-top: 20px; color: #94a3b8;">Năm mới 2026 rực rỡ nhé!</p>
+        <button class="btn-primary" onclick="this.parentElement.classList.remove('active')" style="margin: 20px auto 0;">Đóng</button>
+    </div>
 </body>
 </html>
