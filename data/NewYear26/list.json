@@ -1,7 +1,7 @@
 [
-  {"filename": "dem-nguoc", "title": "Bài 1: Đếm ngược 2026"},
-  {"filename": "so-tien", "title": "Bài 2: Số tiến theo cặp"},
-  {"filename": "li-xi", "title": "Bài 3: Tiền lì xì chẵn"},
-  {"filename": "chuc-mung", "title": "Bài 4: Lời chúc ý nghĩa"},
-  {"filename": "phan-tich", "title": "Bài 5: Phân tích số liên tiếp"}
+  {"filename": "Bài 1", "title": "Đếm ngược 2026"},
+  {"filename": "Bài 2", "title": "Số tiến theo cặp"},
+  {"filename": "Bài 3", "title": "Tiền lì xì chẵn"},
+  {"filename": "Bài 4", "title": "Lời chúc ý nghĩa"},
+  {"filename": "Bài 5", "title": "Phân tích số liên tiếp"}
 ]
