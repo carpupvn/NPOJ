@@ -1,0 +1,12 @@
+{
+  "id": "2026-02",
+  "title": "Số tiến 2026",
+  "lang": "cpp",
+  "desc": "Một năm có 4 chữ số được gọi là 'số tiến theo cặp' nếu 2 chữ số đầu (hàng nghìn và trăm) nhỏ hơn 2 chữ số cuối (hàng chục và đơn vị). Kiểm tra năm N.\nInput: Số nguyên N (1000 <= N <= 9999).\nOutput: YES hoặc NO.",
+  "tests": [
+    {"input": "2026", "output": "YES", "point": "25"},
+    {"input": "2019", "output": "NO", "point": "25"},
+    {"input": "1011", "output": "YES", "point": "25"},
+    {"input": "2222", "output": "NO", "point": "25"}
+  ]
+}

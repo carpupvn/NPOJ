@@ -1,0 +1,12 @@
+{
+  "id": "2026-04",
+  "title": "Lời chúc năm mới",
+  "lang": "cpp",
+  "desc": "Nhập tên của bạn (không có khoảng trắng). In ra lời chúc theo định dạng: Chuc mung nam moi 2026, [Ten]!\nInput: Một xâu ký tự không có khoảng trắng.\nOutput: Câu chào đúng định dạng.",
+  "tests": [
+    {"input": "Nam", "output": "Chuc mung nam moi 2026, Nam!", "point": "25"},
+    {"input": "Teo", "output": "Chuc mung nam moi 2026, Teo!", "point": "25"},
+    {"input": "Luna", "output": "Chuc mung nam moi 2026, Luna!", "point": "25"},
+    {"input": "2026", "output": "Chuc mung nam moi 2026, 2026!", "point": "25"}
+  ]
+}

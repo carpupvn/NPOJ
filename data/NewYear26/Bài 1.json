@@ -1,0 +1,13 @@
+{
+  "id": "2026-01",
+  "title": "Đếm ngược đến 2026",
+  "lang": "cpp",
+  "desc": "Cho biết hôm nay là ngày d, tháng m của năm 2025. Hãy tính xem còn bao nhiêu ngày nữa thì đến ngày 01/01/2026. Biết năm 2025 có 365 ngày.\nInput: Hai số nguyên d m.\nOutput: Một số nguyên duy nhất.",
+  "tests": [
+    {"input": "31 12", "output": "1", "point": "20"},
+    {"input": "30 12", "output": "2", "point": "20"},
+    {"input": "1 1", "output": "364", "point": "20"},
+    {"input": "1 12", "output": "31", "point": "20"},
+    {"input": "15 8", "output": "139", "point": "20"}
+  ]
+}

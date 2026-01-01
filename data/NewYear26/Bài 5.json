@@ -1,0 +1,13 @@
+{
+  "id": "2026-05",
+  "title": "Phân tích số 2026",
+  "lang": "cpp",
+  "desc": "Số 2026 có thể được viết dưới dạng tổng của các số nguyên dương liên tiếp. Hãy đếm xem có bao nhiêu cách phân tích như vậy (không tính trường hợp chỉ có chính số 2026).\nVí dụ: 2026 không có cách nào thì in 0 (thực tế số 2026 chỉ có các cách phân tích liên tiếp khi bao gồm cả số âm, ở đây ta chỉ xét số nguyên dương).\nInput: Số nguyên N.\nOutput: Số lượng cách phân tích.",
+  "tests": [
+    {"input": "2026", "output": "1", "point": "20"},
+    {"input": "15", "output": "3", "point": "20"},
+    {"input": "9", "output": "2", "point": "20"},
+    {"input": "100", "output": "2", "point": "20"},
+    {"input": "2025", "output": "9", "point": "20"}
+  ]
+}
