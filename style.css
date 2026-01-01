@@ -220,42 +220,65 @@ button {
     align-items: center;
 }
 
+/* --- ĐỒNG BỘ CHÍNH XÁC EDITOR --- */
+
 .editor-wrapper {
     flex: 1;
     position: relative;
     overflow: hidden;
+    background: #0d1117; /* Đảm bảo nền đồng nhất */
 }
 
-#code-editor, #highlighting-layer {
+/* Cả hai lớp phải có thuộc tính font và khoảng cách giống hệt nhau */
+#code-editor, 
+#highlighting-layer,
+#highlighting-content {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    padding: 20px;
-    font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    white-space: pre;
-    tab-size: 4;
+    margin: 0 !important; /* Prism thường tự thêm margin, phải xóa bỏ */
+    padding: 20px !important;
+    font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    tab-size: 4 !important;
+    white-space: pre !important;
+    word-wrap: normal !important;
+    overflow-wrap: normal !important;
+    box-sizing: border-box !important;
+}
+
+#code-editor {
+    color: transparent !important; /* Giấu chữ của textarea */
+    background: transparent !important;
+    caret-color: white; /* Giữ lại dấu nháy */
+    z-index: 2;
+    resize: none;
     border: none;
     outline: none;
 }
 
-#code-editor {
-    color: transparent !important;
-    background: transparent !important;
-    caret-color: white;
-    z-index: 2;
-    resize: none;
-}
-
 #highlighting-layer {
     z-index: 1;
-    color: #e6edf3;
     pointer-events: none;
+    overflow: hidden !important;
 }
 
+/* Fix lỗi Prism tự thêm background hoặc lề */
+pre[class*="language-"] {
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+code[class*="language-"] {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 /* --- TERMINAL --- */
 .terminal-body {
     background-color: #050505;
