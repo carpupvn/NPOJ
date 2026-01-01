@@ -287,7 +287,13 @@ window.onload = () => {
     if (savedCode) {
         accessByCode(savedCode);
     }
-
+    // Thêm xử lý phím Enter cho ô nhập mã bài tập
+    const codeInput = document.getElementById('exercise-code');
+    if (codeInput) {
+        codeInput.onkeyup = (e) => {
+            if (e.key === 'Enter') accessByCode();
+        };
+    }
     const ed = document.getElementById('code-editor');
     if(ed) {
         ed.onkeydown = handleEditorKeys;
