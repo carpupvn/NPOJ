@@ -361,46 +361,49 @@ button {
         display: none;
     }
 }
-/* Ghi đè hệ thống view để căn giữa tuyệt đối */
-#view-start.active {
-    display: flex !important;
-    position: fixed;
+/* --- HỆ THỐNG VIEW KHỞI ĐẦU (FIX CĂN GIỮA) --- */
+#view-start {
+    position: fixed;         /* Cố định toàn màn hình */
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    background-color: var(--bg);
+    z-index: 9999;           /* Luôn nằm trên cùng */
+    display: none;           /* Mặc định ẩn */
+}
+
+#view-start.active {
+    display: flex !important; /* Khi active thì hiện Flexbox */
     align-items: center;      /* Căn giữa dọc */
     justify-content: center;   /* Căn giữa ngang */
-    background-color: var(--bg);
-    z-index: 9999;
 }
 
-/* Thu nhỏ Card khởi đầu */
-#view-start .card {
-    width: 90%;               /* Co dãn trên mobile */
-    max-width: 380px;         /* Giới hạn độ rộng nhỏ gọn */
-    padding: 32px;            /* Giảm padding để card nhỏ lại */
-    margin: 0;                /* Xóa bỏ margin tự động */
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+/* Card khởi đầu nhỏ gọn */
+.start-card {
+    width: 360px !important;  /* Độ rộng cố định nhỏ gọn */
+    padding: 30px !important;
+    border-radius: 20px;
+    background-color: var(--card);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     border: 1px solid var(--border);
     text-align: center;
+    margin: 0 auto;
 }
 
-/* Chỉnh lại khoảng cách các thành phần bên trong cho cân đối */
-#view-start h1 {
+/* Các thành phần bên trong card */
+.start-card h1 {
     font-size: 20px;
     margin-bottom: 8px;
 }
 
-#view-start p {
+.start-card p {
     font-size: 14px;
 }
 
-#view-start .input-modern {
-    padding: 10px 14px;
-    font-size: 14px;
-}
-
-#view-start .btn-primary {
-    padding: 12px;
+.logo-box {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+    margin: 0 auto 20px;
 }
