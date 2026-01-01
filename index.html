@@ -10,14 +10,12 @@
 </head>
 <body>
 
-    <section id="view-start" class="view active" style="display: flex; align-items: center; justify-content: center;">
-        <div class="card" style="width: 100%; max-width: 400px; text-align: center; animation: slideUp 0.5s ease;">
-            <div style="background: var(--primary); width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: white; box-shadow: 0 10px 20px var(--primary-glow);">
-                NP
-            </div>
-            <h1 style="margin-bottom: 8px;">Chào mừng trở lại!</h1>
+    <section id="view-start" class="view active">
+        <div class="card start-card">
+            <div class="logo-box">NP</div>
+            <h1>Chào mừng trở lại!</h1>
             <p style="color: var(--text-muted); margin-bottom: 32px;">Nhập mã bài tập để truy cập nội dung</p>
-            
+        
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <input type="text" id="exercise-code" class="input-modern" placeholder="Mã số bài tập..." autocomplete="off">
                 <button class="btn-primary" onclick="accessByCode()" style="padding: 14px;">
