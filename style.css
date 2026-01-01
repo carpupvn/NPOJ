@@ -1,8 +1,8 @@
 /* ============================================================
-   NPOJ PREMIUM STYLESHEET - FULL COMPLETE (427 LINES)
+   NPOJ PREMIUM STYLESHEET - BẢN KHÔI PHỤC ĐẦY ĐỦ 100%
    ============================================================ */
 
-/* --- 1. BIẾN HỆ THỐNG --- */
+/* 1. HỆ THỐNG BIẾN (VARIABLES) */
 :root {
     --primary: #3b82f6;
     --primary-hover: #2563eb;
@@ -17,10 +17,11 @@
     --border: #334155;
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
-    --editor-bg: #0d1117;
+    --term-bg: #000000;
+    --term-text: #4ade80;
 }
 
-/* --- 2. RESET & CƠ BẢN --- */
+/* 2. RESET CƠ BẢN - Bỏ transition all để chống tràn */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -28,33 +29,25 @@
 }
 
 body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     background-color: var(--bg);
     color: var(--text-main);
-    overflow: hidden; /* Ngăn cuộn toàn trang gây tràn */
+    overflow: hidden;
     height: 100vh;
-    width: 100vw;
 }
 
-/* --- 3. HỆ THỐNG VIEW --- */
+/* 3. HỆ THỐNG VIEW */
 .view {
     display: none;
     opacity: 0;
     height: 100%;
-    width: 100%;
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
-
-.view.active {
-    display: block !important;
-    opacity: 1;
-    transform: translateY(0);
-}
-
+.view.active { display: block !important; opacity: 1; transform: translateY(0); }
 .hidden { display: none !important; }
 
-/* --- 4. MÀN HÌNH KHỞI ĐẦU (LOGIN) --- */
+/* 4. MÀN HÌNH KHỞI ĐẦU (VIEW START) */
 #view-start {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
@@ -64,133 +57,91 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 #view-start.active { display: flex !important; }
 
 .start-card {
     width: 400px;
-    padding: 45px;
-    border-radius: 28px;
+    padding: 40px;
+    border-radius: 24px;
     background-color: var(--card);
     border: 1px solid var(--border);
     text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .logo-box {
-    width: 72px; height: 72px;
-    background: linear-gradient(135deg, var(--primary), #60a5fa);
-    color: white; font-weight: 800; font-size: 28px;
+    width: 64px; height: 64px;
+    background: var(--primary);
+    color: white; font-weight: 800; font-size: 24px;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 20px; margin: 0 auto 28px;
-    box-shadow: 0 10px 25px var(--primary-glow);
+    border-radius: 16px; margin: 0 auto 24px;
 }
 
-/* --- 5. INPUT & NHẬP MÃ --- */
+/* 5. INPUT MODERN */
 .input-modern {
-    background-color: var(--input);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    color: white;
     width: 100%;
+    padding: 12px 16px;
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
     outline: none;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    margin-bottom: 20px;
+    transition: border-color 0.2s;
+    margin-bottom: 15px;
 }
+.input-modern:focus { border-color: var(--primary); }
 
-.input-modern:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px var(--primary-glow);
-}
-
-/* --- 6. HỆ THỐNG NÚT --- */
+/* 6. HỆ THỐNG NÚT */
 button {
-    cursor: pointer; border: none; border-radius: 12px;
+    cursor: pointer; border: none; border-radius: 10px;
     padding: 12px 24px; font-weight: 600;
     display: inline-flex; align-items: center; justify-content: center;
-    gap: 10px; font-size: 14px; transition: all 0.2s;
+    gap: 8px; font-size: 14px; transition: 0.2s;
 }
-
-.btn-primary { background: var(--primary); color: white; width: 100%; }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
-
+.btn-primary { background: var(--primary); color: white; }
 .btn-success { background: var(--success); color: white; }
-.btn-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-outline { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-muted); }
+.btn-outline:hover { color: white; border-color: var(--primary); }
 
-/* --- 7. BỐ CỤC APP LAYOUT --- */
-.app-layout {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-}
-
+/* 7. APP LAYOUT */
+.app-layout { display: flex; height: 100vh; width: 100vw; }
 .sidebar {
     width: 260px; min-width: 260px;
     background: var(--sidebar);
     border-right: 1px solid var(--border);
-    padding: 30px 20px;
-    display: flex; flex-direction: column;
+    padding: 30px 20px; display: flex; flex-direction: column;
 }
+.main-body { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
 
-.main-body {
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto;
-    background: var(--bg);
-}
-
-/* --- 8. IDE CONTAINER (FIX TRÀN & DÍNH) --- */
+/* 8. IDE CONTAINER */
 .ide-container {
     display: grid;
-    grid-template-columns: 420px 1fr;
-    gap: 30px;
-    height: calc(100vh - 120px);
-    overflow: hidden;
+    grid-template-columns: 400px 1fr;
+    gap: 25px;
+    height: calc(100vh - 140px);
 }
+.ide-left { display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
+.ide-right { display: grid; grid-template-rows: 1fr 220px; gap: 20px; overflow: hidden; }
 
-.ide-left {
-    display: flex;
-    flex-direction: column;
-    gap: 24px; /* Fix đề bài và kết quả dính nhau */
-    overflow-y: auto;
-}
-
-.ide-right {
-    display: grid;
-    grid-template-rows: 1fr 240px; /* Fix chỉ hiện mỗi terminal */
-    gap: 24px;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* --- 9. EDITOR SECTION --- */
+/* 9. EDITOR SECTION (FIX Ô TRẮNG & LỆCH) */
 .editor-section {
-    background: var(--editor-bg);
+    background: #0d1117;
     border: 1px solid var(--border);
     border-radius: 16px;
-    display: flex; flex-direction: column;
-    overflow: hidden;
+    display: flex; flex-direction: column; overflow: hidden;
 }
 
 .pane-header {
-    background: #161b22;
-    padding: 12px 20px;
+    background: #161b22; padding: 10px 20px;
     border-bottom: 1px solid var(--border);
-    font-size: 12px; font-weight: 700;
-    color: var(--text-muted);
-    display: flex; justify-content: space-between;
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    display: flex; justify-content: space-between; align-items: center;
 }
 
-.editor-wrapper {
-    flex: 1;
-    position: relative;
-    background: var(--editor-bg) !important;
-}
+.editor-wrapper { flex: 1; position: relative; background: #0d1117; }
 
-/* --- 10. ĐỒNG BỘ CHỮ (FIX LỆCH & Ô TRẮNG) --- */
 #code-editor, 
 #highlighting-layer,
 #highlighting-layer pre,
@@ -200,105 +151,73 @@ button {
     font-family: 'Fira Code', monospace !important;
     font-size: 14px !important;
     line-height: 22px !important;
-    tab-size: 4 !important;
     white-space: pre !important;
     box-sizing: border-box !important;
-    background: transparent !important;
 }
 
 #code-editor {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 2;
-    color: transparent !important;
-    caret-color: white;
-    background: transparent !important;
-    resize: none; border: none; outline: none;
-    overflow: auto;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2; color: transparent !important; background: transparent !important;
+    caret-color: white; resize: none; border: none; outline: none; overflow: auto;
 }
 
-#highlighting-layer {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
+#highlighting-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
+/* Fix Prism Tomorrow Theme Background */
 #highlighting-layer pre[class*="language-"] {
     background: transparent !important;
     padding: 0 !important;
+    box-shadow: none !important;
 }
 
-/* --- 11. TERMINAL SECTION --- */
-.terminal-section {
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-}
-
+/* 10. TERMINAL */
 .terminal-body {
-    flex: 1;
-    padding: 20px;
-    color: #10b981;
-    font-family: 'Fira Code', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    overflow-y: auto;
+    background: var(--term-bg);
+    color: var(--term-text);
+    padding: 15px; font-family: 'Fira Code', monospace;
+    flex: 1; overflow-y: auto; font-size: 13px;
 }
 
-/* --- 12. ADMIN & TESTCASE --- */
-.card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
+/* 11. CARDS & GRID */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+
+/* 12. ADMIN & TESTCASE */
+.testcase-row {
+    display: grid; grid-template-columns: 1fr 1fr 100px;
+    gap: 12px; background: rgba(0,0,0,0.2);
+    padding: 15px; border-radius: 12px; margin-bottom: 10px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-}
-
-.test-case-item {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 15px;
-}
-
-/* --- 13. MODAL & HIỆU ỨNG --- */
+/* 13. MODAL CHÚC MỪNG & PHÁO HOA */
 #congrats-modal {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
     background: var(--sidebar);
     border: 2px solid var(--success);
-    padding: 50px; border-radius: 32px;
+    padding: 40px; border-radius: 24px;
     z-index: 10000; text-align: center;
-    box-shadow: 0 0 100px rgba(0,0,0,0.8);
+    box-shadow: 0 0 80px rgba(0,0,0,0.8);
     display: none; opacity: 0;
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
-
 #congrats-modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
 .firework-particle {
-    position: fixed; width: 6px; height: 6px;
+    position: fixed; width: 4px; height: 4px;
     border-radius: 50%; z-index: 9999;
 }
 
-/* --- 14. THANH CUỘN --- */
-::-webkit-scrollbar { width: 8px; height: 8px; }
+/* 14. SCROLLBAR */
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* --- 15. MOBILE --- */
-@media (max-width: 1100px) {
-    .ide-container { grid-template-columns: 1fr; height: auto; }
-    .sidebar { width: 80px; min-width: 80px; }
-    .sidebar span { display: none; }
+/* 15. RESPONSIVE */
+@media (max-width: 1024px) {
+    .ide-container { grid-template-columns: 1fr; }
+    .sidebar { width: 70px; padding: 20px 10px; }
+    .sidebar button span { display: none; }
 }
