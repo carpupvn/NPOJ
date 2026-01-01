@@ -305,3 +305,59 @@ window.onload = () => {
 function authAdmin() {
     if (prompt("Mã bảo mật:") === "05122010") switchView('admin');
 }
+
+// Hàm tạo pháo hoa
+function launchFireworks() {
+    const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#fff', '#ff4500'];
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const particle = document.createElement('div');
+            particle.className = 'firework-particle';
+            
+            // Vị trí xuất hiện ngẫu nhiên
+            const x = Math.random() * window.innerWidth;
+            const y = window.innerHeight;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.backgroundColor = color;
+            particle.style.boxShadow = `0 0 10px ${color}`;
+            
+            document.body.appendChild(particle);
+            
+            // Hiệu ứng bay lên và nổ
+            const destX = x + (Math.random() - 0.5) * 200;
+            const destY = Math.random() * (window.innerHeight * 0.5);
+            
+            particle.animate([
+                { transform: `translate(0, 0)`, opacity: 1 },
+                { transform: `translate(${destX - x}px, ${destY - y}px)`, opacity: 0 }
+            ], {
+                duration: 1000 + Math.random() * 1000,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+
+            setTimeout(() => particle.remove(), 2000);
+        }, i * 100);
+    }
+}
+
+// Hàm hiển thị lời chúc
+function showCongrats() {
+    const modal = document.getElementById('congrats-modal');
+    modal.classList.add('active');
+    launchFireworks();
+    
+    // Tự động ẩn sau 5 giây
+    setTimeout(() => {
+        modal.classList.remove('active');
+    }, 5000);
+}
+
+// --- LOGIC CHÈN VÀO HÀM CHẤM BÀI CỦA BẠN ---
+// Giả sử hàm chấm bài của bạn tính ra biến totalPoint
+if (totalPoint === 100) {
+    showCongrats();
+}
