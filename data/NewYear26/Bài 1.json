@@ -6,7 +6,7 @@
   "tests": [
     {"input": "31 12", "output": "1", "point": "20"},
     {"input": "30 12", "output": "2", "point": "20"},
-    {"input": "1 1", "output": "364", "point": "20"},
+    {"input": "1 1", "output": "365", "point": "20"},
     {"input": "1 12", "output": "31", "point": "20"},
     {"input": "15 8", "output": "139", "point": "20"}
   ]
