@@ -4,7 +4,7 @@
   "lang": "cpp",
   "desc": "Tèo rất thích các chữ số 2 và 6. Cho một số nguyên dương N, hãy đếm xem trong số đó có tổng cộng bao nhiêu chữ số 2 và bao nhiêu chữ số 6.\nInput: Một số nguyên dương N (1 <= N <= 10^18).\nOutput: Hai số nguyên cách nhau một khoảng trắng lần lượt là số lượng chữ số 2 và số lượng chữ số 6.",
   "tests": [
-    {"input": "2026", "output": "1 1", "point": "20"},
+    {"input": "2026", "output": "2 1", "point": "20"},
     {"input": "22266", "output": "3 2", "point": "20"},
     {"input": "13579", "output": "0 0", "point": "20"},
     {"input": "262626", "output": "3 3", "point": "20"},
