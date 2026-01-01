@@ -10,77 +10,56 @@
     <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
 </head>
 <body>
-    <section id="view-start" class="view active" style="
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: var(--bg);
-        z-index: 9999;
-        margin: 0;
-        padding: 0;
-        transform: none !important; /* Loại bỏ lệch do translateY */
-        opacity: 1 !important;
-    ">
-        <div class="card" style="
-            padding: 60px 40px;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-            background: var(--card);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        ">
-            <div style="
-                background: var(--primary);
-                width: 80px;
-                height: 80px;
-                border-radius: 20px;
-                margin: 0 auto 24px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-            ">
+    <section id="view-start" class="view active" style="display: flex !important; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 9999;">
+        <div class="card" style="padding: 60px 40px; width: 90%; max-width: 450px; text-align: center; background: var(--card); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div style="background: var(--primary); width: 80px; height: 80px; border-radius: 20px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);">
                 <span style="font-size: 2.5rem; font-weight: 900; color: white;">N</span>
             </div>
         
             <h1 style="font-size: 3rem; margin: 0; color: white; letter-spacing: -2px;">NPOJ</h1>
             <p style="color: #94a3b8; margin: 10px 0 40px 0; font-size: 1.1rem;">Hệ thống lập trình hiện đại</p>
         
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button class="btn-primary" style="padding: 16px; font-weight: bold; font-size: 1rem;" onclick="switchView('user')">BẮT ĐẦU HỌC</button>
-                <button class="btn-outline" style="padding: 16px;" onclick="authAdmin()">QUẢN TRỊ VIÊN</button>
+            <div id="login-container" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="number" id="exercise-code" class="input-modern" placeholder="Nhập mã bài tập (VD: 31122025)" style="text-align: center; font-size: 1.1rem; border: 2px solid #334155;">
+                <button id="btn-access" class="btn-primary" style="padding: 16px; font-weight: bold; font-size: 1rem;" onclick="accessByCode()">VÀO HỌC NGAY</button>
+                <div id="loader" style="display: none; margin-top: 10px;">
+                    <small style="color: var(--primary)">Đang kiểm tra mã...</small>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #334155; margin: 10px 0;">
+                <button class="btn-outline" style="padding: 12px; font-size: 0.9rem; opacity: 0.7;" onclick="authAdmin()">QUẢN TRỊ VIÊN</button>
             </div>
         </div>
     </section>
+
     <div id="app-content" class="app-layout hidden">
         <aside class="sidebar">
             <div style="font-size:1.8rem; font-weight:900; color:var(--primary); margin-bottom:40px">NPOJ</div>
             <nav style="display:flex; flex-direction:column; gap:10px">
-                <button class="btn-outline" style="justify-content:flex-start" onclick="switchView('user')">📚 Bài tập</button>
+                <button class="btn-outline" id="nav-prob" style="justify-content:flex-start" onclick="switchView('user')">📚 Bài tập</button>
                 <button class="btn-outline" style="justify-content:flex-start" onclick="authAdmin()">🛠 Quản lý</button>
             </nav>
-            <button class="btn-outline" style="margin-top:auto; color:#f43f5e" onclick="location.reload()">⏻ Đăng xuất</button>
+            <div id="current-code-display" style="margin-top: 20px; font-size: 0.8rem; color: #64748b; padding: 10px; border-top: 1px solid #334155;">
+                MÃ: <span id="display-ma" style="color: var(--primary); font-weight: bold;">---</span>
+            </div>
+            <button class="btn-outline" style="margin-top:auto; color:#f43f5e" onclick="logout()">⏻ Đăng xuất</button>
         </aside>
 
         <main class="main-body">
             <section id="view-user" class="view">
-                <h2>Danh sách bài tập</h2>
-                <div id="prob-grid" class="grid"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                    <h2>Danh sách bài tập</h2>
+                </div>
+                <div id="prob-grid" class="grid">
+                    </div>
             </section>
 
             <section id="view-solve" class="view">
-                <button class="btn-outline" onclick="switchView('user')" style="margin-bottom:15px">← Quay lại</button>
+                <button class="btn-outline" onclick="switchView('user')" style="margin-bottom:15px">← Quay lại danh sách</button>
                 <div class="ide-container">
                     <div class="ide-left">
                         <div class="card" style="flex:1">
                             <h2 id="solve-title" style="margin:0; color:var(--primary)"></h2>
-                            <div id="solve-desc" style="color:#94a3b8; line-height:1.6; font-size:14px"></div>
+                            <div id="solve-desc" style="color:#94a3b8; line-height:1.6; font-size:14px; margin-top:15px"></div>
                         </div>
                         <div class="card">
                             <small style="color:#64748b">TRẠNG THÁI</small>
@@ -151,9 +130,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script src="main.js"></script>
 </body>
-
 </html>
-
-
-
-

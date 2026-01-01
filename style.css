@@ -1,246 +1,149 @@
 :root {
-    --primary: #3b82f6; --accent: #8b5cf6; --bg: #020617;
-    --sidebar: #0f172a; --card: #1e293b; --border: rgba(255,255,255,0.1);
-    --term-bg: #000000; --term-text: #4ade80;
+    --primary: #3b82f6; 
+    --accent: #8b5cf6; 
+    --bg: #020617;
+    --sidebar: #0f172a; 
+    --card: #1e293b; 
+    --border: rgba(255,255,255,0.1);
+    --term-bg: #000000; 
+    --term-text: #4ade80;
 }
 
 * { box-sizing: border-box; transition: all 0.2s ease; }
-body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; overflow: hidden; height: 100vh; }
 
-/* Sửa lại phần View để không bị lệch */
+body { 
+    margin: 0; 
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg); 
+    color: #fff; 
+    overflow: hidden; 
+    height: 100vh; 
+}
+
+/* --- HỆ THỐNG VIEW --- */
 .view { 
     display: none; 
     opacity: 0; 
     height: 100%; 
-    pointer-events: none; /* Click sẽ xuyên qua nếu màn hình đang ẩn */
+    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
-/* Khi active, nếu là màn hình start thì dùng flex, các màn hình khác dùng block */
 .view.active { 
     display: block !important; 
     opacity: 1; 
-    pointer-events: auto; /* Chỉ cho phép click khi màn hình hiện lên */
+    pointer-events: auto; 
 }
 
-/* Riêng màn hình mở đầu cần căn giữa tuyệt đối */
-#view-start.active {
-    display: flex !important;
+/* View Start: Luôn căn giữa để nhập mã */
+#view-start {
+    display: none;
     align-items: center;
     justify-content: center;
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
     z-index: 9999;
+    background: var(--bg);
+}
+
+#view-start.active {
+    display: flex !important;
 }
 
 .hidden { display: none !important; }
 
-/* Tối ưu thêm cho Mobile */
-@media (max-width: 768px) {
-    .ide-container {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-    }
-    
-    .ide-left, .ide-right {
-        width: 100%;
-    }
-
-    /* Giúp vùng soạn thảo code cao hơn trên điện thoại */
-    .editor-wrapper {
-        min-height: 300px;
-    }
-}
-/* Buttons */
-button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; padding: 10px 20px; font-size: 13px; }
+/* --- NÚT BẤM --- */
+button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; padding: 10px 20px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-success { background: #10b981; color: white; }
 .btn-danger { background: #f43f5e; color: white; }
 .btn-outline { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #94a3b8; }
-.btn-outline:hover { color: white; border-color: var(--primary); }
+.btn-outline:hover { color: white; border-color: var(--primary); background: rgba(59, 130, 246, 0.1); }
 
-/* Layout */
-.app-layout { display: flex; height: 100vh; }
-.sidebar { width: 260px; background: var(--sidebar); padding: 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-.main-body { flex: 1; padding: 25px; overflow-y: auto; }
+/* --- LAYOUT CHÍNH --- */
+.app-layout { display: flex; height: 100vh; width: 100vw; }
+.sidebar { width: 260px; background: var(--sidebar); padding: 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+.main-body { flex: 1; padding: 25px; overflow-y: auto; background: var(--bg); }
 
-/* IDE Common Grid */
-.ide-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: calc(100vh - 100px); margin-top: 15px; }
+/* --- DANH SÁCH BÀI TẬP --- */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+.problem-card {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 25px;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.problem-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.prob-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+/* --- IDE CONTAINER --- */
+.ide-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: calc(100vh - 120px); margin-top: 15px; }
 .ide-left { display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
-.ide-right { display: grid; grid-template-rows: 1fr 240px; gap: 15px; overflow: hidden; }
+.ide-right { display: grid; grid-template-rows: 1fr 200px; gap: 15px; overflow: hidden; }
 
-/* Editor & Code Area */
+/* --- EDITOR --- */
 .editor-section { position: relative; background: #010409; border-radius: 12px; border: 1px solid #333; overflow: hidden; display: flex; flex-direction: column; }
-.editor-wrapper { flex: 1; position: relative; }
+.editor-wrapper { flex: 1; position: relative; background: #0d1117; }
+
 #code-editor, #highlighting-layer {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     padding: 20px; font-family: 'Fira Code', monospace; font-size: 14px; line-height: 1.6;
     border: none !important; outline: none !important; margin: 0; white-space: pre; overflow: auto;
 }
+
 #code-editor { color: transparent !important; background: transparent !important; caret-color: white; z-index: 2; resize: none; }
 #highlighting-layer { z-index: 1; pointer-events: none; }
 
-/* Terminal */
-.pane-header { background: #1e293b; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: bold; }
-.terminal-body { background: var(--term-bg); color: var(--term-text); padding: 15px; font-family: 'Consolas', monospace; flex: 1; overflow-y: auto; }
-.term-input { color: #fff; outline: none; border-bottom: 1px solid #444; min-width: 50px; display: inline-block; }
+/* --- TERMINAL --- */
+.pane-header { background: #1e293b; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: bold; color: #94a3b8; }
+.terminal-body { background: var(--term-bg); color: var(--term-text); padding: 15px; font-family: 'Consolas', monospace; flex: 1; overflow-y: auto; font-size: 13px; line-height: 1.5; border-top: 1px solid #333; }
 
-/* Cards & Admin */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-.card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 16px; }
-.admin-item-card { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; margin-bottom: 10px; }
-.input-modern { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; margin-bottom: 10px; font-family: inherit; }
+/* --- ADMIN & INPUT --- */
+.input-modern { width: 100%; padding: 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; margin-bottom: 10px; font-family: inherit; outline: none; }
+.input-modern:focus { border-color: var(--primary); }
 
 .testcase-row { display: grid; grid-template-columns: 1fr 1fr 100px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
-/* Hiệu ứng cho ô bài tập */
-.problem-card {
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-.problem-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    background: linear-gradient(145deg, #24334d, #1e293b);
-    border-color: var(--primary);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.3);
-}
-
-/* Hiệu ứng vệt sáng quét qua khi hover */
-.problem-card::after {
-    content: "";
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    transition: 0.5s;
-}
-
-.problem-card:hover::after {
-    left: 100%;
-}
-
-.problem-card h3 {
-    transition: color 0.3s;
-}
-
-.problem-card:hover h3 {
-    color: var(--primary);
-}
-/* Tối ưu Mobile */
+/* --- RESPONSIVE (MOBILE) --- */
 @media (max-width: 768px) {
-    /* 1. Sidebar chuyển thành thanh điều hướng dưới hoặc ẩn */
-    .app-layout {
-        flex-direction: column;
+    body { overflow-y: auto; height: auto; }
+    
+    .app-layout { flex-direction: column; }
+    
+    .sidebar { 
+        width: 100%; height: auto; padding: 15px; 
+        flex-direction: row; align-items: center; 
+        justify-content: space-between; position: sticky; top: 0; z-index: 1000;
+        border-right: none; border-bottom: 1px solid var(--border);
     }
     
-    .sidebar {
-        width: 100%;
-        height: auto;
-        padding: 15px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+    .sidebar nav { flex-direction: row !important; gap: 5px; }
+    .sidebar div#current-code-display { display: none; } /* Ẩn bớt trên mobile */
 
-    .sidebar div, .sidebar button[onclick*="location.reload"] {
-        display: none; /* Ẩn logo và nút đăng xuất trên mobile để tiết kiệm chỗ */
-    }
-
-    .sidebar nav {
-        flex-direction: row !important;
-        width: 100%;
-        justify-content: space-around;
-    }
-
-    /* 2. IDE Layout: Chuyển từ ngang sang dọc */
-    .ide-container {
-        grid-template-columns: 1fr !important; /* Ép về 1 cột */
-        height: auto !important;
-        gap: 10px;
-    }
-
-    .ide-left {
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    .editor-wrapper {
-        height: 350px !important; /* Tăng chiều cao vùng gõ code trên mobile */
-    }
-
-    /* 3. Danh sách bài tập (Grid) */
-    .grid {
-        grid-template-columns: 1fr !important; /* Mỗi bài tập 1 hàng */
-    }
-
-    /* 4. Font chữ */
-    h1 { font-size: 2.5rem !important; }
-    .card { padding: 20px !important; }
+    .main-body { padding: 15px; }
+    
+    .ide-container { grid-template-columns: 1fr; height: auto; }
+    .ide-right { grid-template-rows: 400px 250px; }
+    
+    .grid { grid-template-columns: 1fr; }
+    
+    #code-editor, #highlighting-layer { font-size: 16px; } /* Tránh bị auto zoom trên iPhone */
 }
-@media (max-width: 768px) {
-    /* Ép body cho phép cuộn tự nhiên và giãn rộng */
-    body {
-        overflow-y: auto !important;
-        height: auto !important;
-        -webkit-text-size-adjust: 100%; /* Fix lỗi chữ nhỏ trên iOS */
-    }
-
-    .app-layout {
-        flex-direction: column;
-    }
-
-    /* Tối ưu danh sách bài tập */
-    .grid { 
-        grid-template-columns: 1fr !important; 
-        gap: 15px;
-    }
-
-    .card { 
-        width: 100% !important; 
-        padding: 20px !important; 
-    }
-
-    /* Editor: Chữ 16px là tiêu chuẩn để điện thoại không tự động zoom vào input */
-    #code-editor, #highlighting-layer { 
-        font-size: 16px !important; 
-        padding: 15px !important;
-    }
-
-    /* IDE Layout dọc */
-    .ide-container {
-        grid-template-columns: 1fr !important;
-        height: auto !important;
-    }
-
-    .ide-right {
-        grid-template-rows: 450px 300px !important;
-    }
-
-    /* Nút bấm to, dễ chạm bằng tay */
-    button { 
-        min-height: 48px; 
-        width: 100%; 
-        font-size: 15px !important;
-        margin-bottom: 8px;
-    }
-
-    .sidebar {
-        width: 100% !important;
-        padding: 10px !important;
-        flex-direction: row !important;
-        justify-content: space-around;
-    }
-}
-
-
-
-
