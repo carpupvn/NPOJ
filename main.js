@@ -407,13 +407,43 @@ window.onload = () => {
     if (codeInput) {
         codeInput.onkeyup = (e) => { if (e.key === 'Enter') accessByCode(); };
     }
+
     const ed = document.getElementById('code-editor');
-    if(ed) {
+    const highlightingLayer = document.getElementById('highlighting-layer');
+
+    if (ed) {
         ed.onkeydown = handleEditorKeys;
         ed.oninput = updateHighlighting;
+        
+        // ĐỒNG BỘ CUỘN: Quan trọng để không bị ghosting khi code dài
+        ed.addEventListener('scroll', () => {
+            if (highlightingLayer) {
+                highlightingLayer.scrollTop = ed.scrollTop;
+                highlightingLayer.scrollLeft = ed.scrollLeft;
+            }
+        });
     }
     applyButtonEffects(); 
 };
+
+// Cập nhật hàm này để xử lý ký tự trống ở cuối dòng
+function updateHighlighting() {
+    const editor = document.getElementById('code-editor');
+    const display = document.getElementById('highlighting-content');
+    if (editor && display) {
+        let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
+        display.className = `language-${lang}`;
+        
+        // Thêm một dấu cách nếu dòng cuối là xuống dòng để dấu nháy không bị nhảy lên trên
+        let content = editor.value;
+        if (content[content.length - 1] === "\n") {
+            content += " ";
+        }
+        
+        display.textContent = content; 
+        if (window.Prism) Prism.highlightElement(display);
+    }
+}
 
 function authAdmin() {
     if (prompt("Mã bảo mật hệ thống:") === "05122010") switchView('admin');
