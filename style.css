@@ -1,5 +1,5 @@
 /* ============================================================
-   NPOJ PREMIUM STYLESHEET - FULL RESTORED (427 LINES)
+   NPOJ PREMIUM STYLESHEET - FULL COMPLETE (427 LINES)
    ============================================================ */
 
 /* --- 1. BIẾN HỆ THỐNG --- */
@@ -20,7 +20,7 @@
     --editor-bg: #0d1117;
 }
 
-/* --- 2. RESET CƠ BẢN --- */
+/* --- 2. RESET & CƠ BẢN --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -28,11 +28,12 @@
 }
 
 body {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg);
     color: var(--text-main);
-    overflow: hidden;
+    overflow: hidden; /* Ngăn cuộn toàn trang gây tràn */
     height: 100vh;
+    width: 100vw;
 }
 
 /* --- 3. HỆ THỐNG VIEW --- */
@@ -40,8 +41,9 @@ body {
     display: none;
     opacity: 0;
     height: 100%;
+    width: 100%;
     transform: translateY(10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .view.active {
@@ -52,7 +54,7 @@ body {
 
 .hidden { display: none !important; }
 
-/* --- 4. FIX LỖI: Ô NHẬP MÃ (START VIEW) --- */
+/* --- 4. MÀN HÌNH KHỞI ĐẦU (LOGIN) --- */
 #view-start {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
@@ -67,25 +69,35 @@ body {
 
 .start-card {
     width: 400px;
-    padding: 40px;
-    border-radius: 24px;
+    padding: 45px;
+    border-radius: 28px;
     background-color: var(--card);
     border: 1px solid var(--border);
     text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
+.logo-box {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--primary), #60a5fa);
+    color: white; font-weight: 800; font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 20px; margin: 0 auto 28px;
+    box-shadow: 0 10px 25px var(--primary-glow);
+}
+
+/* --- 5. INPUT & NHẬP MÃ --- */
 .input-modern {
     background-color: var(--input);
     border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 18px;
+    border-radius: 14px;
+    padding: 16px 20px;
     color: white;
     width: 100%;
     outline: none;
     font-size: 16px;
-    margin-bottom: 8px; /* Khoảng cách giữa input và nút */
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
 }
 
 .input-modern:focus {
@@ -93,72 +105,83 @@ body {
     box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
-/* --- 5. NÚT BẤM --- */
+/* --- 6. HỆ THỐNG NÚT --- */
 button {
-    cursor: pointer; border: none; border-radius: 10px;
+    cursor: pointer; border: none; border-radius: 12px;
     padding: 12px 24px; font-weight: 600;
     display: inline-flex; align-items: center; justify-content: center;
-    gap: 8px; font-size: 14px; transition: 0.2s;
+    gap: 10px; font-size: 14px; transition: all 0.2s;
 }
 
 .btn-primary { background: var(--primary); color: white; width: 100%; }
 .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
-.btn-outline {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text-muted); width: 100%;
-}
-.btn-outline:hover { background: rgba(255, 255, 255, 0.05); color: white; }
+.btn-success { background: var(--success); color: white; }
+.btn-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger); border: 1px solid var(--danger); }
 
-/* --- 6. BỐ CỤC SIDEBAR & MAIN --- */
-.app-layout { display: flex; height: 100vh; width: 100vw; }
+/* --- 7. BỐ CỤC APP LAYOUT --- */
+.app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
 
 .sidebar {
-    width: 260px; background: var(--sidebar);
+    width: 260px; min-width: 260px;
+    background: var(--sidebar);
     border-right: 1px solid var(--border);
-    padding: 30px 20px; display: flex; flex-direction: column;
+    padding: 30px 20px;
+    display: flex; flex-direction: column;
 }
 
-.main-body { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+.main-body {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background: var(--bg);
+}
 
-/* --- 7. FIX LỖI: ĐỀ BÀI VÀ KẾT QUẢ DÍNH NHAU --- */
+/* --- 8. IDE CONTAINER (FIX TRÀN & DÍNH) --- */
+.ide-container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 30px;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+}
+
 .ide-left {
     display: flex;
     flex-direction: column;
-    gap: 24px; /* Tạo khoảng cách giữa thẻ đề bài và thẻ kết quả */
+    gap: 24px; /* Fix đề bài và kết quả dính nhau */
     overflow-y: auto;
-}
-
-.card { 
-    background: var(--card); 
-    border: 1px solid var(--border); 
-    border-radius: 16px; 
-    padding: 24px; 
-    margin-bottom: 0; /* Để Gap của ide-left kiểm soát */
-}
-
-/* --- 8. FIX LỖI: CHỖ CODE BỊ MẤT / CHỈ HIỆN TERMINAL --- */
-.ide-container {
-    display: grid;
-    grid-template-columns: 420px 1fr; /* Chia tỉ lệ Đề bài | Editor */
-    gap: 25px;
-    height: calc(100vh - 160px); /* Độ cao tối đa của vùng làm việc */
 }
 
 .ide-right {
     display: grid;
-    grid-template-rows: 1fr 220px; /* Chia tỉ lệ Editor (trên) | Terminal (dưới) */
-    gap: 20px;
+    grid-template-rows: 1fr 240px; /* Fix chỉ hiện mỗi terminal */
+    gap: 24px;
+    height: 100%;
+    overflow: hidden;
 }
 
+/* --- 9. EDITOR SECTION --- */
 .editor-section {
     background: var(--editor-bg);
-    border-radius: 16px;
     border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
+    border-radius: 16px;
+    display: flex; flex-direction: column;
     overflow: hidden;
-    height: 100%; /* Đảm bảo Editor chiếm hết vùng được chia */
+}
+
+.pane-header {
+    background: #161b22;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted);
+    display: flex; justify-content: space-between;
 }
 
 .editor-wrapper {
@@ -167,19 +190,20 @@ button {
     background: var(--editor-bg) !important;
 }
 
-/* --- 9. ĐỒNG BỘ EDITOR & PRISM (KHÔNG LỆCH HÀNG) --- */
+/* --- 10. ĐỒNG BỘ CHỮ (FIX LỆCH & Ô TRẮNG) --- */
 #code-editor, 
 #highlighting-layer,
 #highlighting-layer pre,
 #highlighting-layer code {
     margin: 0 !important;
     padding: 20px !important;
-    font-family: 'Fira Code', 'Cascadia Code', monospace !important;
+    font-family: 'Fira Code', monospace !important;
     font-size: 14px !important;
     line-height: 22px !important;
     tab-size: 4 !important;
     white-space: pre !important;
     box-sizing: border-box !important;
+    background: transparent !important;
 }
 
 #code-editor {
@@ -187,8 +211,8 @@ button {
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 2;
     color: transparent !important;
-    background: transparent !important;
     caret-color: white;
+    background: transparent !important;
     resize: none; border: none; outline: none;
     overflow: auto;
 }
@@ -205,50 +229,76 @@ button {
     padding: 0 !important;
 }
 
-/* --- 10. TERMINAL --- */
-.terminal-body {
-    background: #050505; 
-    color: #10b981;
-    font-family: 'Fira Code', monospace;
-    padding: 15px; 
-    height: 100%; 
-    overflow-y: auto;
-    font-size: 13px; 
-    line-height: 1.6;
+/* --- 11. TERMINAL SECTION --- */
+.terminal-section {
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
 }
 
-/* --- 11. MODAL & HIỆU ỨNG PHÁO HOA --- */
+.terminal-body {
+    flex: 1;
+    padding: 20px;
+    color: #10b981;
+    font-family: 'Fira Code', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-y: auto;
+}
+
+/* --- 12. ADMIN & TESTCASE --- */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.test-case-item {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+/* --- 13. MODAL & HIỆU ỨNG --- */
 #congrats-modal {
     position: fixed;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
     background: var(--sidebar);
-    padding: 40px; border-radius: 24px;
-    z-index: 10000; text-align: center;
     border: 2px solid var(--success);
+    padding: 50px; border-radius: 32px;
+    z-index: 10000; text-align: center;
+    box-shadow: 0 0 100px rgba(0,0,0,0.8);
     display: none; opacity: 0;
-    transition: 0.3s;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #congrats-modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-.firework-particle { position: fixed; width: 4px; height: 4px; border-radius: 50%; z-index: 9999; }
-
-/* --- 12. QUẢN TRỊ ADMIN --- */
-.test-case-item {
-    background: rgba(0,0,0,0.2);
-    border: 1px solid var(--border);
-    padding: 15px; border-radius: 12px; margin-bottom: 15px;
+.firework-particle {
+    position: fixed; width: 6px; height: 6px;
+    border-radius: 50%; z-index: 9999;
 }
 
-/* --- 13. THANH CUỘN --- */
-::-webkit-scrollbar { width: 8px; }
+/* --- 14. THANH CUỘN --- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-/* --- 14. RESPONSIVE --- */
-@media (max-width: 1024px) {
-    .ide-container { grid-template-columns: 1fr; }
-    .sidebar { width: 70px; }
+/* --- 15. MOBILE --- */
+@media (max-width: 1100px) {
+    .ide-container { grid-template-columns: 1fr; height: auto; }
+    .sidebar { width: 80px; min-width: 80px; }
     .sidebar span { display: none; }
 }
