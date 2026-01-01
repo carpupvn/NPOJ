@@ -1,223 +1,103 @@
 /* ============================================================
-   NPOJ PREMIUM STYLESHEET - BẢN KHÔI PHỤC ĐẦY ĐỦ 100%
+   NPOJ STYLESHEET - BẢN SỬA LỖI TRIỆT ĐỂ
    ============================================================ */
 
-/* 1. HỆ THỐNG BIẾN (VARIABLES) */
 :root {
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --primary-glow: rgba(59, 130, 246, 0.4);
-    --success: #10b981;
-    --danger: #f43f5e;
-    --warning: #f59e0b;
-    --bg: #0f172a;
-    --sidebar: #1e293b;
-    --card: #1e293b;
-    --input: #0f172a;
-    --border: #334155;
-    --text-main: #f1f5f9;
-    --text-muted: #94a3b8;
-    --term-bg: #000000;
-    --term-text: #4ade80;
+    --primary: #3b82f6; --accent: #8b5cf6; --bg: #020617;
+    --sidebar: #0f172a; --card: #1e293b; --border: rgba(255,255,255,0.1);
+    --term-bg: #000000; --term-text: #4ade80;
 }
 
-/* 2. RESET CƠ BẢN - Bỏ transition all để chống tràn */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* RESET */
+* { box-sizing: border-box; }
+
+body { 
+    margin: 0; font-family: 'Inter', sans-serif; 
+    background: var(--bg); color: #fff; 
+    overflow: hidden; height: 100vh; 
 }
 
-body {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    background-color: var(--bg);
-    color: var(--text-main);
-    overflow: hidden;
-    height: 100vh;
-}
-
-/* 3. HỆ THỐNG VIEW */
-.view {
-    display: none;
-    opacity: 0;
-    height: 100%;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
+/* HỆ THỐNG VIEW */
+.view { display: none; opacity: 0; transform: translateY(10px); height: 100%; transition: all 0.3s ease; }
 .view.active { display: block !important; opacity: 1; transform: translateY(0); }
 .hidden { display: none !important; }
 
-/* 4. MÀN HÌNH KHỞI ĐẦU (VIEW START) */
-#view-start {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: var(--bg);
-    z-index: 9999;
-    display: none;
-    align-items: center;
-    justify-content: center;
-}
-#view-start.active { display: flex !important; }
-
-.start-card {
-    width: 400px;
-    padding: 40px;
-    border-radius: 24px;
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-.logo-box {
-    width: 64px; height: 64px;
-    background: var(--primary);
-    color: white; font-weight: 800; font-size: 24px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 16px; margin: 0 auto 24px;
-}
-
-/* 5. INPUT MODERN */
-.input-modern {
-    width: 100%;
-    padding: 12px 16px;
-    background: var(--input);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: white;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 15px;
-}
-.input-modern:focus { border-color: var(--primary); }
-
-/* 6. HỆ THỐNG NÚT */
-button {
-    cursor: pointer; border: none; border-radius: 10px;
-    padding: 12px 24px; font-weight: 600;
-    display: inline-flex; align-items: center; justify-content: center;
-    gap: 8px; font-size: 14px; transition: 0.2s;
-}
+/* NÚT BẤM */
+button { cursor: pointer; border: none; font-weight: 700; border-radius: 8px; padding: 10px 20px; font-size: 13px; }
 .btn-primary { background: var(--primary); color: white; }
-.btn-success { background: var(--success); color: white; }
-.btn-danger { background: var(--danger); color: white; }
-.btn-outline { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-muted); }
-.btn-outline:hover { color: white; border-color: var(--primary); }
+.btn-success { background: #10b981; color: white; }
+.btn-danger { background: #f43f5e; color: white; }
+.btn-outline { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #94a3b8; }
 
-/* 7. APP LAYOUT */
-.app-layout { display: flex; height: 100vh; width: 100vw; }
-.sidebar {
-    width: 260px; min-width: 260px;
-    background: var(--sidebar);
-    border-right: 1px solid var(--border);
-    padding: 30px 20px; display: flex; flex-direction: column;
-}
-.main-body { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
+/* BỐ CỤC */
+.app-layout { display: flex; height: 100vh; }
+.sidebar { width: 260px; background: var(--sidebar); padding: 30px; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+.main-body { flex: 1; padding: 25px; overflow-y: auto; }
 
-/* 8. IDE CONTAINER */
-.ide-container {
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 25px;
-    height: calc(100vh - 140px);
-}
+/* IDE CONTAINER */
+.ide-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: calc(100vh - 120px); margin-top: 15px; }
 .ide-left { display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-.ide-right { display: grid; grid-template-rows: 1fr 220px; gap: 20px; overflow: hidden; }
+.ide-right { display: grid; grid-template-rows: 1fr 240px; gap: 20px; overflow: hidden; }
 
-/* 9. EDITOR SECTION (FIX Ô TRẮNG & LỆCH) */
-.editor-section {
-    background: #0d1117;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    display: flex; flex-direction: column; overflow: hidden;
+/* --- FIX LỖI Ô TRẮNG & LỆCH DÒNG --- */
+.editor-section { 
+    position: relative; background: #010409; 
+    border-radius: 12px; border: 1px solid #333; 
+    overflow: hidden; display: flex; flex-direction: column; 
 }
-
-.pane-header {
-    background: #161b22; padding: 10px 20px;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px; font-weight: 700; color: var(--text-muted);
-    display: flex; justify-content: space-between; align-items: center;
-}
-
-.editor-wrapper { flex: 1; position: relative; background: #0d1117; }
+.editor-wrapper { flex: 1; position: relative; background: #010409 !important; }
 
 #code-editor, 
-#highlighting-layer,
-#highlighting-layer pre,
+#highlighting-layer, 
+#highlighting-layer pre, 
 #highlighting-layer code {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    padding: 20px !important; 
+    font-family: 'Fira Code', monospace !important; 
+    font-size: 14px !important; 
+    line-height: 1.6 !important;
     margin: 0 !important;
-    padding: 20px !important;
-    font-family: 'Fira Code', monospace !important;
-    font-size: 14px !important;
-    line-height: 22px !important;
-    white-space: pre !important;
+    tab-size: 4 !important;
+    white-space: pre !important; 
     box-sizing: border-box !important;
 }
 
-#code-editor {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 2; color: transparent !important; background: transparent !important;
-    caret-color: white; resize: none; border: none; outline: none; overflow: auto;
+#code-editor { 
+    color: transparent !important; 
+    background: transparent !important; 
+    caret-color: white; 
+    z-index: 2; 
+    resize: none; 
+    border: none !important;
+    outline: none !important;
+    overflow: auto;
 }
 
-#highlighting-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+#highlighting-layer { z-index: 1; pointer-events: none; overflow: hidden; }
 
-/* Fix Prism Tomorrow Theme Background */
+/* Ghi đè bắt buộc để xóa ô trắng của Prism */
 #highlighting-layer pre[class*="language-"] {
     background: transparent !important;
-    padding: 0 !important;
     box-shadow: none !important;
+    padding: 0 !important;
+    overflow: hidden !important;
 }
 
-/* 10. TERMINAL */
-.terminal-body {
-    background: var(--term-bg);
-    color: var(--term-text);
-    padding: 15px; font-family: 'Fira Code', monospace;
-    flex: 1; overflow-y: auto; font-size: 13px;
+#highlighting-layer code[class*="language-"] {
+    background: transparent !important;
+    padding: 0 !important;
 }
 
-/* 11. CARDS & GRID */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+/* TERMINAL */
+.pane-header { background: #1e293b; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: bold; }
+.terminal-body { background: var(--term-bg); color: var(--term-text); padding: 15px; font-family: 'Consolas', monospace; flex: 1; overflow-y: auto; white-space: pre-wrap; }
 
-/* 12. ADMIN & TESTCASE */
-.testcase-row {
-    display: grid; grid-template-columns: 1fr 1fr 100px;
-    gap: 12px; background: rgba(0,0,0,0.2);
-    padding: 15px; border-radius: 12px; margin-bottom: 10px;
-}
+/* CARDS & ADMIN */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 16px; }
+.input-modern { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: white; margin-bottom: 10px; }
+.testcase-row { display: grid; grid-template-columns: 1fr 1fr 100px; gap: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 10px; }
 
-/* 13. MODAL CHÚC MỪNG & PHÁO HOA */
-#congrats-modal {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
-    background: var(--sidebar);
-    border: 2px solid var(--success);
-    padding: 40px; border-radius: 24px;
-    z-index: 10000; text-align: center;
-    box-shadow: 0 0 80px rgba(0,0,0,0.8);
-    display: none; opacity: 0;
-    transition: 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-#congrats-modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
-.firework-particle {
-    position: fixed; width: 4px; height: 4px;
-    border-radius: 50%; z-index: 9999;
-}
-
-/* 14. SCROLLBAR */
+/* SCROLLBAR */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-/* 15. RESPONSIVE */
-@media (max-width: 1024px) {
-    .ide-container { grid-template-columns: 1fr; }
-    .sidebar { width: 70px; padding: 20px 10px; }
-    .sidebar button span { display: none; }
-}
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
