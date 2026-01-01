@@ -19,17 +19,17 @@ async function accessByCode(forcedCode = null) {
         const v = Date.now();
         // Truy cập vào folder mã số để lấy list.json
         const response = await fetch(`data/${code}/list.json?v=${v}`);
-
+        
         if (!response.ok) throw new Error("Mã bài tập không tồn tại!");
 
         const fileConfigs = await response.json();
-
+        
         // Tải chi tiết các file .json bài tập trong folder đó
         const promises = fileConfigs.map(item => 
             fetch(`data/${code}/${encodeURIComponent(item.filename)}.json?v=${v}`)
                 .then(res => res.ok ? res.json() : null)
         );
-
+        
         const results = await Promise.all(promises);
         problems = results.filter(p => p !== null);
         currentCode = code;
@@ -54,16 +54,16 @@ function logout() {
     // Xóa tham số URL
     const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({ path: baseUrl }, '', baseUrl);
-
+    
     problems = [];
     currentCode = null;
-
+    
     // Reset giao diện về màn hình chào
     document.getElementById('app-content').classList.add('hidden');
     const viewStart = document.getElementById('view-start');
     viewStart.style.display = 'flex';
     viewStart.classList.add('active');
-
+    
     document.getElementById('exercise-code').value = '';
 }
 
@@ -86,7 +86,7 @@ function switchView(v) {
         viewStart.style.display = 'none';
         viewStart.classList.remove('active');
         appContent.classList.remove('hidden');
-
+        
         const target = document.getElementById('view-' + v);
         if (target) {
             target.style.display = 'block';
@@ -103,7 +103,7 @@ function switchView(v) {
 function renderUserProblems() {
     const grid = document.getElementById('prob-grid');
     if (!grid) return;
-
+    
     if (problems.length === 0) {
         grid.innerHTML = "<p style='color:#94a3b8; grid-column:1/-1; text-align:center;'>Folder này chưa có bài tập nào.</p>";
         return;
@@ -131,11 +131,11 @@ function openSolve(id) {
     document.getElementById('lang-tag').innerText = activeProb.lang.toUpperCase();
     document.getElementById('terminal').innerHTML = '';
     document.getElementById('code-editor').value = '';
-
+    
     const status = document.getElementById('judge-status');
     status.innerText = "Sẵn sàng.";
     status.style.color = "#94a3b8";
-
+    
     updateHighlighting();
     switchView('solve');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -159,7 +159,7 @@ async function runCode() {
     const status = document.getElementById('judge-status');
     const term = document.getElementById('terminal');
     if (!activeProb) return;
-
+    
     term.innerHTML = `<span style="color:#60a5fa">>> Đang khởi tạo...</span>\n`;
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#60a5fa";
@@ -193,7 +193,7 @@ async function runCode() {
         }
         term.scrollTop = term.scrollHeight;
     }
-
+    
     status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#f59e0b";
 }
@@ -222,7 +222,7 @@ function handleEditorKeys(e) {
         editor.selectionStart = editor.selectionEnd = s + 4;
         updateHighlighting();
     }
-
+    
     // 2. Backspace thông minh: Xóa một lần 4 dấu cách
     if (e.key === 'Backspace') {
         const textBefore = v.substring(0, s);
@@ -263,7 +263,7 @@ function handleEditorKeys(e) {
             // Thêm lùi dòng nếu dòng trước kết thúc bằng dấu : (Python) hoặc { (C++)
             if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) extraIndent = "    ";
             if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) extraIndent = "    ";
-
+            
             editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(editor.selectionEnd);
             editor.selectionStart = editor.selectionEnd = s + 1 + indent.length + extraIndent.length;
             updateHighlighting();
@@ -304,60 +304,4 @@ window.onload = () => {
 
 function authAdmin() {
     if (prompt("Mã bảo mật:") === "05122010") switchView('admin');
-}
-
-// Hàm tạo pháo hoa
-function launchFireworks() {
-    const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#fff', '#ff4500'];
-    for (let i = 0; i < 50; i++) {
-        setTimeout(() => {
-            const particle = document.createElement('div');
-            particle.className = 'firework-particle';
-            
-            // Vị trí xuất hiện ngẫu nhiên
-            const x = Math.random() * window.innerWidth;
-            const y = window.innerHeight;
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.backgroundColor = color;
-            particle.style.boxShadow = `0 0 10px ${color}`;
-            
-            document.body.appendChild(particle);
-            
-            // Hiệu ứng bay lên và nổ
-            const destX = x + (Math.random() - 0.5) * 200;
-            const destY = Math.random() * (window.innerHeight * 0.5);
-            
-            particle.animate([
-                { transform: `translate(0, 0)`, opacity: 1 },
-                { transform: `translate(${destX - x}px, ${destY - y}px)`, opacity: 0 }
-            ], {
-                duration: 1000 + Math.random() * 1000,
-                easing: 'ease-out',
-                fill: 'forwards'
-            });
-
-            setTimeout(() => particle.remove(), 2000);
-        }, i * 100);
-    }
-}
-
-// Hàm hiển thị lời chúc
-function showCongrats() {
-    const modal = document.getElementById('congrats-modal');
-    modal.classList.add('active');
-    launchFireworks();
-    
-    // Tự động ẩn sau 5 giây
-    setTimeout(() => {
-        modal.classList.remove('active');
-    }, 5000);
-}
-
-// --- LOGIC CHÈN VÀO HÀM CHẤM BÀI CỦA BẠN ---
-// Giả sử hàm chấm bài của bạn tính ra biến totalPoint
-if (totalPoint === 100) {
-    showCongrats();
 }
