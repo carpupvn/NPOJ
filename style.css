@@ -361,43 +361,46 @@ button {
         display: none;
     }
 }
-/* Ghi đè hệ thống view để căn giữa view-start */
+/* Ghi đè hệ thống view để căn giữa tuyệt đối */
 #view-start.active {
     display: flex !important;
-    align-items: center;      /* Căn giữa theo chiều dọc */
-    justify-content: center;   /* Căn giữa theo chiều ngang */
-    height: 100vh;
-    width: 100vw;
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;      /* Căn giữa dọc */
+    justify-content: center;   /* Căn giữa ngang */
     background-color: var(--bg);
-    z-index: 999;
+    z-index: 9999;
 }
 
-/* Card riêng cho màn hình bắt đầu */
-.start-card {
-    width: 100%;
-    max-width: 400px;
-    padding: 40px !important;
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+/* Thu nhỏ Card khởi đầu */
+#view-start .card {
+    width: 90%;               /* Co dãn trên mobile */
+    max-width: 380px;         /* Giới hạn độ rộng nhỏ gọn */
+    padding: 32px;            /* Giảm padding để card nhỏ lại */
+    margin: 0;                /* Xóa bỏ margin tự động */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     border: 1px solid var(--border);
-    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
 }
 
-/* Logo NP */
-.logo-box {
-    background: var(--primary);
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    margin: 0 auto 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: 800;
-    color: white;
-    box-shadow: 0 10px 20px var(--primary-glow);
+/* Chỉnh lại khoảng cách các thành phần bên trong cho cân đối */
+#view-start h1 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+#view-start p {
+    font-size: 14px;
+}
+
+#view-start .input-modern {
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+#view-start .btn-primary {
+    padding: 12px;
 }
