@@ -214,11 +214,60 @@ function handleEditorKeys(e) {
     const editor = e.target;
     const s = editor.selectionStart;
     const v = editor.value;
+
+    // 1. Tab: Thêm 4 dấu cách
     if (e.key === 'Tab') {
         e.preventDefault();
         editor.value = v.substring(0, s) + "    " + v.substring(editor.selectionEnd);
         editor.selectionStart = editor.selectionEnd = s + 4;
         updateHighlighting();
+    }
+    
+    // 2. Backspace thông minh: Xóa một lần 4 dấu cách
+    if (e.key === 'Backspace') {
+        const textBefore = v.substring(0, s);
+        if (textBefore.endsWith('    ')) {
+            e.preventDefault();
+            editor.value = v.substring(0, s - 4) + v.substring(s);
+            editor.selectionStart = editor.selectionEnd = s - 4;
+            updateHighlighting();
+        }
+    }
+
+    // 3. Tự động đóng ngoặc cặp
+    const pairs = { '{': '}', '(': ')', '[': ']', '"': '"', "'": "'" };
+    if (pairs[e.key]) {
+        e.preventDefault();
+        const close = pairs[e.key];
+        editor.value = v.substring(0, s) + e.key + close + v.substring(editor.selectionEnd);
+        editor.selectionStart = editor.selectionEnd = s + 1;
+        updateHighlighting();
+    }
+
+    // 4. Enter: Xuống dòng và tự động lùi đầu dòng (Auto-indent)
+    if (e.key === 'Enter') {
+        const lastLine = v.substring(0, s).split('\n').pop();
+        const indent = lastLine.match(/^\s*/)[0];
+        const charBefore = v[s - 1];
+        const charAfter = v[s];
+
+        // Nếu nhấn Enter giữa cặp dấu ngoặc nhọn { | }
+        if (charBefore === '{' && charAfter === '}') {
+            e.preventDefault();
+            editor.value = v.substring(0, s) + "\n" + indent + "    \n" + indent + v.substring(s);
+            editor.selectionStart = editor.selectionEnd = s + indent.length + 5;
+            updateHighlighting();
+        } else {
+            e.preventDefault();
+            let extraIndent = "";
+            // Thêm lùi dòng nếu dòng trước kết thúc bằng dấu : (Python) hoặc { (C++)
+            if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) extraIndent = "    ";
+            if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) extraIndent = "    ";
+            
+            editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(editor.selectionEnd);
+            editor.selectionStart = editor.selectionEnd = s + 1 + indent.length + extraIndent.length;
+            updateHighlighting();
+        }
     }
 }
 
