@@ -1,0 +1,10 @@
+{
+  "id": 1704153600004,
+  "title": "Năm nhuận",
+  "desc": "Kiểm tra năm n có phải năm nhuận không. Nếu đúng in 'YES', sai in 'NO'.",
+  "lang": "cpp",
+  "tests": [
+    { "input": "2024", "output": "YES", "point": 50 },
+    { "input": "2026", "output": "NO", "point": 50 }
+  ]
+}

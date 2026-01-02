@@ -1,0 +1,11 @@
+{
+  "id": 1704153600003,
+  "title": "Chia bánh chưng",
+  "desc": "Một chiếc bánh chưng có 8 miếng. Nhập số người n, tính số bánh ít nhất để mỗi người có 1 miếng.",
+  "lang": "cpp",
+  "tests": [
+    { "input": "8", "output": "1", "point": 30 },
+    { "input": "9", "output": "2", "point": 30 },
+    { "input": "20", "output": "3", "point": 40 }
+  ]
+}

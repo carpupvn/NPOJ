@@ -1,0 +1,9 @@
+{
+  "id": 1704153600002,
+  "title": "Đếm ngược giao thừa",
+  "desc": "Nhập số giây n. In đếm ngược về 1 và kết thúc bằng 'Chuc Mung Nam Moi!'.",
+  "lang": "cpp",
+  "tests": [
+    { "input": "3", "output": "3\n2\n1\nChuc Mung Nam Moi!", "point": 100 }
+  ]
+}
