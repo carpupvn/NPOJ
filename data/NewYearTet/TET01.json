@@ -4,7 +4,7 @@
   "desc": "Nhập số lượng tờ tiền mệnh giá 10k, 20k, 50k và 100k. Tính tổng số tiền nhận được.\nInput: 4 số nguyên a, b, c, d tương ứng với số tờ.\nOutput: Tổng số tiền (đơn vị nghìn đồng).",
   "lang": "cpp",
   "tests": [
-    { "input": "1 1 1 1", "output": "180", "point": 50 },
-    { "input": "2 0 5 3", "output": "570", "point": 50 }
+    { "input": "1 1 1 1", "output": "180", "point": 70 },
+    { "input": "100000000000 2 3 4", "output": "1000000000590", "point": 30 }
   ]
 }

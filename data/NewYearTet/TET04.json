@@ -4,7 +4,9 @@
   "desc": "Kiểm tra năm n có phải năm nhuận không. Nếu đúng in 'YES', sai in 'NO'.",
   "lang": "cpp",
   "tests": [
-    { "input": "2024", "output": "YES", "point": 50 },
-    { "input": "2026", "output": "NO", "point": 50 }
+    { "input": "2024", "output": "YES", "point": 30 },
+    { "input": "2026", "output": "NO", "point": 30 },
+    { "input": "400", "output": "NO", "point": 20 },
+    { "input": "4000000000000", "output": "NO", "point": 20 }
   ]
 }
