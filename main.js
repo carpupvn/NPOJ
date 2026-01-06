@@ -171,16 +171,15 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
     
-    term.innerHTML = `<span style="color:#64748b">>> Initializing Judge System...</span>\n`;
-    status.innerText = "JUDGING...";
+    term.innerHTML = `<span style="color:#60a5fa">>> Đang khởi tạo hệ thống chấm bài...</span>\n`;
+    status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
     let earnedPoints = 0;
-    let totalMaxPoints = activeProb.tests.reduce((a, b) => a + (parseInt(b.point) || 0), 0);
 
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
-        term.innerHTML += `<span style="color:#94a3b8">Running Test ${i+1}... </span>`;
+        term.innerHTML += `<span style="color:#94a3b8">Đang chạy Kiểm thử ${i+1}... </span>`;
         
         try {
             const response = await fetch("https://emkc.org/api/v2/piston/execute", {
@@ -190,8 +189,7 @@ async function runCode() {
                     language: activeProb.lang === "cpp" ? "cpp" : "python",
                     version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
                     files: [{ content: code }],
-                    stdin: test.input,
-                    run_timeout: 3000 // OJ thường giới hạn thời gian chạy
+                    stdin: test.input
                 })
             });
             
@@ -200,31 +198,26 @@ async function runCode() {
             const stderr = result.run?.stderr || "";
 
             if (stderr) {
-                term.innerHTML += `${getStatusLabel('ERR')}\n<small style="color:#f87171">${stderr.substring(0, 100)}</small>\n`;
+                term.innerHTML += `<span style="color:#ef4444">[LỖI CHẠY]</span>\n<small style="color:#f87171">${stderr.split('\n')[0]}</small>\n`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                term.innerHTML += `${getStatusLabel('AC')} (+${p}đ)\n`;
+                term.innerHTML += `<span style="color:#4ade80">[CHÍNH XÁC]</span> (+${p}đ)\n`;
             } else {
-                term.innerHTML += `${getStatusLabel('WA')}\n`;
-                // OJ thường cho xem Input/Output mong muốn ở test đầu tiên bị sai
-                if (earnedPoints === 0) {
-                   term.innerHTML += `<div style="color:#64748b; font-size:11px; margin-left:15px;">Expected: ${test.output} | Got: ${output}</div>\n`;
-                }
+                term.innerHTML += `<span style="color:#f43f5e">[SAI KẾT QUẢ]</span>\n`;
             }
         } catch (e) { 
-            term.innerHTML += `${getStatusLabel('ERR')} (Connection Failed)\n`; 
+            term.innerHTML += `<span style="color:#ef4444">[LỖI KẾT NỐI]</span>\n`; 
         }
         term.scrollTop = term.scrollHeight;
         await new Promise(r => setTimeout(r, 50));
     }
     
-    // Kết luận cuối cùng
-    const isFullAC = earnedPoints === totalMaxPoints && totalMaxPoints > 0;
-    status.innerText = isFullAC ? "STATUS: ACCEPTED" : `STATUS: PARTIAL (${earnedPoints}/${totalMaxPoints})`;
-    status.style.color = isFullAC ? "#10b981" : "#fbbf24";
+    // Hiển thị điểm theo dạng X/100 (có thể > 100)
+    status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
+    status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
 
-    if (isFullAC) showCongrats();
+    if (earnedPoints >= 100) showCongrats();
 }
 // --- 5. EDITOR & HIỆU ỨNG (GIỮ NGUYÊN) ---
 function updateHighlighting() {
@@ -259,18 +252,7 @@ function handleEditorKeys(e) {
         updateHighlighting();
     }
     
-    // 2. Backspace thông minh: Xóa một lần 4 dấu cách
-    if (e.key === 'Backspace') {
-        const textBefore = v.substring(0, s);
-        if (textBefore.endsWith('    ')) {
-            e.preventDefault();
-            editor.value = v.substring(0, s - 4) + v.substring(s);
-            editor.selectionStart = editor.selectionEnd = s - 4;
-            updateHighlighting();
-        }
-    }
-
-    // 3. Tự động đóng ngoặc cặp
+    // 2. Tự động đóng ngoặc cặp
     const pairs = { '{': '}', '(': ')', '[': ']', '"': '"', "'": "'" };
     if (pairs[e.key]) {
         e.preventDefault();
@@ -280,30 +262,39 @@ function handleEditorKeys(e) {
         updateHighlighting();
     }
 
-    // 4. Enter: Xuống dòng và tự động lùi đầu dòng (Auto-indent)
+    // 3. Enter: Tự động xuống dòng và lùi đầu dòng (Đã sửa lỗi dư khoảng trắng)
     if (e.key === 'Enter') {
-        const lastLine = v.substring(0, s).split('\n').pop();
-        const indent = lastLine.match(/^\s*/)[0];
+        e.preventDefault();
+        
+        // Lấy nội dung của dòng hiện tại trước khi nhấn Enter
+        const lines = v.substring(0, s).split('\n');
+        const lastLine = lines[lines.length - 1];
+        
+        // Tìm khoảng trắng đầu dòng hiện tại (indent)
+        const indentMatch = lastLine.match(/^\s*/);
+        const indent = indentMatch ? indentMatch[0] : "";
+        
+        let extraIndent = "";
+        // Chỉ thêm 4 dấu cách nếu dòng trước kết thúc bằng ký tự đặc biệt
+        if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) {
+            extraIndent = "    ";
+        } else if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) {
+            extraIndent = "    ";
+        }
+
         const charBefore = v[s - 1];
         const charAfter = v[s];
 
-        // Nếu nhấn Enter giữa cặp dấu ngoặc nhọn { | }
+        // Trường hợp nhấn Enter giữa cặp {} của C++
         if (charBefore === '{' && charAfter === '}') {
-            e.preventDefault();
             editor.value = v.substring(0, s) + "\n" + indent + "    \n" + indent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + indent.length + 5;
-            updateHighlighting();
         } else {
-            e.preventDefault();
-            let extraIndent = "";
-            // Thêm lùi dòng nếu dòng trước kết thúc bằng dấu : (Python) hoặc { (C++)
-            if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) extraIndent = "    ";
-            if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) extraIndent = "    ";
-            
-            editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(editor.selectionEnd);
+            // Xuống dòng và chỉ thêm đúng lượng indent cần thiết
+            editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + 1 + indent.length + extraIndent.length;
-            updateHighlighting();
         }
+        updateHighlighting();
     }
 }
 
