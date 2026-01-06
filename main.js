@@ -228,14 +228,20 @@ function updateHighlighting() {
     if (editor && display) {
         let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
         display.className = `language-${lang}`;
-        // Thêm khoảng trắng để xử lý lỗi dòng cuối
-        display.textContent = editor.value + (editor.value.endsWith("\n") ? " " : ""); 
+        
+        // SỬA TẠI ĐÂY: Gán trực tiếp giá trị và chỉ thêm dấu cách ảo ở CUỐI để fix lỗi dòng cuối
+        let content = editor.value;
+        if (content.endsWith("\n")) content += " ";
+        
+        display.textContent = content; 
         
         if (window.Prism) Prism.highlightElement(display);
 
-        // Khớp vị trí cuộn ngay khi gõ
-        hlLayer.scrollTop = editor.scrollTop;
-        hlLayer.scrollLeft = editor.scrollLeft;
+        // Đồng bộ cuộn
+        if (hlLayer) {
+            hlLayer.scrollTop = editor.scrollTop;
+            hlLayer.scrollLeft = editor.scrollLeft;
+        }
     }
 }
 
