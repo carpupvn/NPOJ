@@ -171,7 +171,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
     
-    term.innerHTML = `<span style="color:#60a5fa">>> Đang khởi tạo hệ thống chấm bài...</span>\n`;
+    term.innerHTML = `<span style="color:#60a5fa">>> Đang kết nối máy chủ chấm bài...</span>\n`;
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -179,7 +179,7 @@ async function runCode() {
 
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
-        term.innerHTML += `<span style="color:#94a3b8">Đang chạy Kiểm thử ${i+1}... </span>`;
+        term.innerHTML += `<span style="color:#94a3b8">Test ${i+1}: </span>`;
         
         try {
             const response = await fetch("https://emkc.org/api/v2/piston/execute", {
@@ -198,13 +198,13 @@ async function runCode() {
             const stderr = result.run?.stderr || "";
 
             if (stderr) {
-                term.innerHTML += `<span style="color:#ef4444">[LỖI CHẠY]</span>\n<small style="color:#f87171">${stderr.split('\n')[0]}</small>\n`;
+                term.innerHTML += `<span style="color:#ef4444">[LỖI THỰC THI]</span>\n`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                term.innerHTML += `<span style="color:#4ade80">[CHÍNH XÁC]</span> (+${p}đ)\n`;
+                term.innerHTML += `<span style="color:#4ade80">[ĐÚNG]</span> (+${p}đ)\n`;
             } else {
-                term.innerHTML += `<span style="color:#f43f5e">[SAI KẾT QUẢ]</span>\n`;
+                term.innerHTML += `<span style="color:#f43f5e">[SAI]</span>\n`;
             }
         } catch (e) { 
             term.innerHTML += `<span style="color:#ef4444">[LỖI KẾT NỐI]</span>\n`; 
@@ -213,7 +213,7 @@ async function runCode() {
         await new Promise(r => setTimeout(r, 50));
     }
     
-    // Hiển thị điểm theo dạng X/100 (có thể > 100)
+    // Hiển thị điểm dạng 120/100 theo yêu cầu
     status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
 
@@ -244,7 +244,7 @@ function handleEditorKeys(e) {
     const s = editor.selectionStart;
     const v = editor.value;
 
-    // 1. Tab: Thêm 4 dấu cách
+    // 1. Xử lý phím Tab (Thêm đúng 4 dấu cách)
     if (e.key === 'Tab') {
         e.preventDefault();
         editor.value = v.substring(0, s) + "    " + v.substring(editor.selectionEnd);
@@ -252,7 +252,7 @@ function handleEditorKeys(e) {
         updateHighlighting();
     }
     
-    // 2. Tự động đóng ngoặc cặp
+    // 2. Tự động đóng ngoặc (Giữ nguyên)
     const pairs = { '{': '}', '(': ')', '[': ']', '"': '"', "'": "'" };
     if (pairs[e.key]) {
         e.preventDefault();
@@ -262,20 +262,20 @@ function handleEditorKeys(e) {
         updateHighlighting();
     }
 
-    // 3. Enter: Tự động xuống dòng và lùi đầu dòng (Đã sửa lỗi dư khoảng trắng)
+    // 3. Xử lý phím Enter (FIX lỗi lùi đầu dòng bị dư)
     if (e.key === 'Enter') {
         e.preventDefault();
         
-        // Lấy nội dung của dòng hiện tại trước khi nhấn Enter
+        // Lấy nội dung của dòng hiện tại để tính toán indent
         const lines = v.substring(0, s).split('\n');
         const lastLine = lines[lines.length - 1];
         
-        // Tìm khoảng trắng đầu dòng hiện tại (indent)
-        const indentMatch = lastLine.match(/^\s*/);
+        // Chỉ lấy những khoảng trắng thực sự có ở đầu dòng (không lấy tab ảo)
+        const indentMatch = lastLine.match(/^[ ]*/); 
         const indent = indentMatch ? indentMatch[0] : "";
         
         let extraIndent = "";
-        // Chỉ thêm 4 dấu cách nếu dòng trước kết thúc bằng ký tự đặc biệt
+        // Chỉ thêm thụt lề nếu có dấu : hoặc {
         if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) {
             extraIndent = "    ";
         } else if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) {
@@ -285,12 +285,12 @@ function handleEditorKeys(e) {
         const charBefore = v[s - 1];
         const charAfter = v[s];
 
-        // Trường hợp nhấn Enter giữa cặp {} của C++
+        // Enter giữa cặp dấu ngoặc {|}
         if (charBefore === '{' && charAfter === '}') {
             editor.value = v.substring(0, s) + "\n" + indent + "    \n" + indent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + indent.length + 5;
         } else {
-            // Xuống dòng và chỉ thêm đúng lượng indent cần thiết
+            // Xuống dòng với đúng lượng indent của dòng trước
             editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + 1 + indent.length + extraIndent.length;
         }
