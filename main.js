@@ -215,11 +215,19 @@ async function runCode() {
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
     const display = document.getElementById('highlighting-content');
+    const highlighting = document.getElementById('highlighting');
+    
     if (editor && display) {
         let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
         display.className = `language-${lang}`;
+        // Thêm khoảng trống ở cuối để tránh lệch dòng khi có xuống dòng mới
         display.textContent = editor.value + (editor.value.endsWith("\n") ? " " : ""); 
+        
         if (window.Prism) Prism.highlightElement(display);
+
+        // Đảm bảo cuộn ngay lập tức khi nội dung thay đổi
+        highlighting.scrollTop = editor.scrollTop;
+        highlighting.scrollLeft = editor.scrollLeft;
     }
 }
 
@@ -294,23 +302,20 @@ function applyButtonEffects() {
 
 // --- 6. KHỞI TẠO HỆ THỐNG ---
 window.onload = () => {
-    // Kiểm tra URL xem có mã cũ không
-    const urlParams = new URLSearchParams(window.location.search);
-    const savedCode = urlParams.get('ma');
-    if (savedCode) {
-        accessByCode(savedCode);
-    }
-    // Thêm xử lý phím Enter cho ô nhập mã bài tập
-    const codeInput = document.getElementById('exercise-code');
-    if (codeInput) {
-        codeInput.onkeyup = (e) => {
-            if (e.key === 'Enter') accessByCode();
-        };
-    }
+    // ... các đoạn code cũ giữ nguyên ...
+
     const ed = document.getElementById('code-editor');
-    if(ed) {
+    const highlighting = document.getElementById('highlighting'); // Thẻ cha của phần hiển thị
+
+    if(ed && highlighting) {
         ed.onkeydown = handleEditorKeys;
         ed.oninput = updateHighlighting;
+
+        // Đồng bộ lăn chuột
+        ed.onscroll = () => {
+            highlighting.scrollTop = ed.scrollTop;
+            highlighting.scrollLeft = ed.scrollLeft;
+        };
     }
     applyButtonEffects(); 
 };
