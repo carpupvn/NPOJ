@@ -215,19 +215,18 @@ async function runCode() {
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
     const display = document.getElementById('highlighting-content');
-    const highlighting = document.getElementById('highlighting');
+    const hlLayer = document.getElementById('highlighting-layer');
     
     if (editor && display) {
         let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
         display.className = `language-${lang}`;
-        // Thêm khoảng trống ở cuối để tránh lệch dòng khi có xuống dòng mới
         display.textContent = editor.value + (editor.value.endsWith("\n") ? " " : ""); 
         
         if (window.Prism) Prism.highlightElement(display);
 
-        // Đảm bảo cuộn ngay lập tức khi nội dung thay đổi
-        highlighting.scrollTop = editor.scrollTop;
-        highlighting.scrollLeft = editor.scrollLeft;
+        // Đồng bộ cuộn ngay lập tức sau khi highlight xong
+        hlLayer.scrollTop = editor.scrollTop;
+        hlLayer.scrollLeft = editor.scrollLeft;
     }
 }
 
@@ -316,6 +315,19 @@ window.onload = () => {
             highlighting.scrollTop = ed.scrollTop;
             highlighting.scrollLeft = ed.scrollLeft;
         };
+        const ed = document.getElementById('code-editor');
+        const hlLayer = document.getElementById('highlighting-layer');
+
+        if(ed && hlLayer) {
+            ed.onkeydown = handleEditorKeys;
+            ed.oninput = updateHighlighting;
+
+            // Kỹ thuật đồng bộ cuộn
+            ed.onscroll = () => {
+                hlLayer.scrollTop = ed.scrollTop;
+                hlLayer.scrollLeft = ed.scrollLeft;
+            };
+        }
     }
     applyButtonEffects(); 
 };
