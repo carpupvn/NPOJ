@@ -166,11 +166,16 @@ async function runCode() {
 
     let earnedPoints = 0;
 
+    // Chạy qua toàn bộ mảng tests trong JSON
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
         try {
+            // Thêm await để đợi từng test một, tránh bị API chặn do gửi quá nhanh
             const response = await fetch("https://emkc.org/api/v2/piston/execute", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
                     language: activeProb.lang === "cpp" ? "cpp" : "python",
                     version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
@@ -178,6 +183,7 @@ async function runCode() {
                     stdin: test.input
                 })
             });
+            
             const result = await response.json();
             const output = (result.run?.output || "").trim();
 
@@ -189,15 +195,22 @@ async function runCode() {
                 term.innerHTML += `<span style="color:#f43f5e">Test ${i+1}: SAI</span>\n`;
             }
         } catch (e) { 
-            term.innerHTML += `Lỗi kết nối bộ chấm\n`; 
+            term.innerHTML += `<span style="color:#ef4444">Test ${i+1}: Lỗi kết nối bộ chấm</span>\n`; 
         }
         term.scrollTop = term.scrollHeight;
+        
+        // Nghỉ một chút giữa các test (50ms) để ổn định kết nối API
+        await new Promise(resolve => setTimeout(resolve, 50));
     }
     
-    status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
-    status.style.color = earnedPoints >= 100 ? "#10b981" : "#f59e0b";
-}
+    // Hiển thị tổng điểm thực tế (không giới hạn 100)
+    status.innerText = `KẾT QUẢ: ${earnedPoints} ĐIỂM`;
+    status.style.color = "#10b981";
 
+    if (earnedPoints > 0) {
+        showCongrats();
+    }
+}
 // --- 5. EDITOR & HIỆU ỨNG (GIỮ NGUYÊN) ---
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
