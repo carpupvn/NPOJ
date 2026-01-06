@@ -153,6 +153,17 @@ function compareOutputs(received, expected) {
     }
     return false;
 }
+// Thêm hàm định dạng kết quả giống OJ chuyên nghiệp
+function getStatusLabel(status) {
+    const labels = {
+        'AC': { text: 'ACCEPTED', color: '#4ade80' },
+        'WA': { text: 'WRONG ANSWER', color: '#f43f5e' },
+        'TLE': { text: 'TIME LIMIT EXCEEDED', color: '#fbbf24' },
+        'ERR': { text: 'RUNTIME ERROR', color: '#ef4444' }
+    };
+    const s = labels[status] || labels['ERR'];
+    return `<span style="color: ${s.color}; font-weight: bold;">[${s.text}]</span>`;
+}
 
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -160,56 +171,60 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
     
-    term.innerHTML = `<span style="color:#60a5fa">>> Đang khởi tạo...</span>\n`;
-    status.innerText = "ĐANG CHẤM...";
-    status.style.color = "#60a5fa";
+    term.innerHTML = `<span style="color:#64748b">>> Initializing Judge System...</span>\n`;
+    status.innerText = "JUDGING...";
+    status.style.color = "#fbbf24";
 
     let earnedPoints = 0;
+    let totalMaxPoints = activeProb.tests.reduce((a, b) => a + (parseInt(b.point) || 0), 0);
 
-    // Chạy qua toàn bộ mảng tests trong JSON
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
+        term.innerHTML += `<span style="color:#94a3b8">Running Test ${i+1}... </span>`;
+        
         try {
-            // Thêm await để đợi từng test một, tránh bị API chặn do gửi quá nhanh
             const response = await fetch("https://emkc.org/api/v2/piston/execute", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     language: activeProb.lang === "cpp" ? "cpp" : "python",
                     version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
                     files: [{ content: code }],
-                    stdin: test.input
+                    stdin: test.input,
+                    run_timeout: 3000 // OJ thường giới hạn thời gian chạy
                 })
             });
             
             const result = await response.json();
             const output = (result.run?.output || "").trim();
+            const stderr = result.run?.stderr || "";
 
-            if (compareOutputs(output, test.output)) {
+            if (stderr) {
+                term.innerHTML += `${getStatusLabel('ERR')}\n<small style="color:#f87171">${stderr.substring(0, 100)}</small>\n`;
+            } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                term.innerHTML += `<span style="color:#4ade80">Test ${i+1}: ĐÚNG (+${p}đ)</span>\n`;
+                term.innerHTML += `${getStatusLabel('AC')} (+${p}đ)\n`;
             } else {
-                term.innerHTML += `<span style="color:#f43f5e">Test ${i+1}: SAI</span>\n`;
+                term.innerHTML += `${getStatusLabel('WA')}\n`;
+                // OJ thường cho xem Input/Output mong muốn ở test đầu tiên bị sai
+                if (earnedPoints === 0) {
+                   term.innerHTML += `<div style="color:#64748b; font-size:11px; margin-left:15px;">Expected: ${test.output} | Got: ${output}</div>\n`;
+                }
             }
         } catch (e) { 
-            term.innerHTML += `<span style="color:#ef4444">Test ${i+1}: Lỗi kết nối bộ chấm</span>\n`; 
+            term.innerHTML += `${getStatusLabel('ERR')} (Connection Failed)\n`; 
         }
         term.scrollTop = term.scrollHeight;
-        
-        // Nghỉ một chút giữa các test (50ms) để ổn định kết nối API
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(r => setTimeout(r, 50));
     }
     
-    // Hiển thị tổng điểm thực tế (không giới hạn 100)
-    status.innerText = `KẾT QUẢ: ${earnedPoints} ĐIỂM`;
-    status.style.color = "#10b981";
+    // Kết luận cuối cùng
+    const isFullAC = earnedPoints === totalMaxPoints && totalMaxPoints > 0;
+    status.innerText = isFullAC ? "STATUS: ACCEPTED" : `STATUS: PARTIAL (${earnedPoints}/${totalMaxPoints})`;
+    status.style.color = isFullAC ? "#10b981" : "#fbbf24";
 
-    if (earnedPoints > 0) {
-        showCongrats();
-    }
+    if (isFullAC) showCongrats();
 }
 // --- 5. EDITOR & HIỆU ỨNG (GIỮ NGUYÊN) ---
 function updateHighlighting() {
