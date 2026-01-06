@@ -220,11 +220,12 @@ function updateHighlighting() {
     if (editor && display) {
         let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
         display.className = `language-${lang}`;
+        // Thêm khoảng trắng để xử lý lỗi dòng cuối
         display.textContent = editor.value + (editor.value.endsWith("\n") ? " " : ""); 
         
         if (window.Prism) Prism.highlightElement(display);
 
-        // Đồng bộ cuộn ngay lập tức sau khi highlight xong
+        // Khớp vị trí cuộn ngay khi gõ
         hlLayer.scrollTop = editor.scrollTop;
         hlLayer.scrollLeft = editor.scrollLeft;
     }
@@ -301,33 +302,31 @@ function applyButtonEffects() {
 
 // --- 6. KHỞI TẠO HỆ THỐNG ---
 window.onload = () => {
-    // ... các đoạn code cũ giữ nguyên ...
+    // Xử lý mã từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const savedCode = urlParams.get('ma');
+    if (savedCode) accessByCode(savedCode);
 
+    // Enter để vào bài tập
+    const codeInput = document.getElementById('exercise-code');
+    if (codeInput) {
+        codeInput.onkeyup = (e) => {
+            if (e.key === 'Enter') accessByCode();
+        };
+    }
+
+    // Đồng bộ cuộn Editor
     const ed = document.getElementById('code-editor');
-    const highlighting = document.getElementById('highlighting'); // Thẻ cha của phần hiển thị
-
-    if(ed && highlighting) {
+    const hlLayer = document.getElementById('highlighting-layer');
+    if(ed && hlLayer) {
         ed.onkeydown = handleEditorKeys;
         ed.oninput = updateHighlighting;
-
-        // Đồng bộ lăn chuột
+        
+        // Ép lớp layer cuộn theo textarea
         ed.onscroll = () => {
-            highlighting.scrollTop = ed.scrollTop;
-            highlighting.scrollLeft = ed.scrollLeft;
+            hlLayer.scrollTop = ed.scrollTop;
+            hlLayer.scrollLeft = ed.scrollLeft;
         };
-        const ed = document.getElementById('code-editor');
-        const hlLayer = document.getElementById('highlighting-layer');
-
-        if(ed && hlLayer) {
-            ed.onkeydown = handleEditorKeys;
-            ed.oninput = updateHighlighting;
-
-            // Kỹ thuật đồng bộ cuộn
-            ed.onscroll = () => {
-                hlLayer.scrollTop = ed.scrollTop;
-                hlLayer.scrollLeft = ed.scrollLeft;
-            };
-        }
     }
     applyButtonEffects(); 
 };
