@@ -250,6 +250,21 @@ function handleEditorKeys(e) {
     const s = editor.selectionStart;
     const v = editor.value;
 
+    // --- SMART BACKSPACE ---
+    if (e.key === 'Backspace' && s === editor.selectionEnd) {
+        const lineStart = v.lastIndexOf('\n', s - 1) + 1;
+        const textBeforeCursor = v.substring(lineStart, s);
+        
+        // Nếu phía trước con trỏ chỉ toàn khoảng trắng và chia hết cho 4
+        if (textBeforeCursor.length > 0 && textBeforeCursor.trim() === '' && textBeforeCursor.length % 4 === 0) {
+            e.preventDefault();
+            editor.value = v.substring(0, s - 4) + v.substring(s);
+            editor.selectionStart = editor.selectionEnd = s - 4;
+            updateHighlighting();
+            return;
+        }
+    }
+
     // 1. Xử lý phím Tab (Thêm đúng 4 dấu cách)
     if (e.key === 'Tab') {
         e.preventDefault();
