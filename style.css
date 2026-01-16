@@ -381,3 +381,17 @@ button {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
 }
+
+/* Triệt tiêu mọi khoảng cách mặc định có thể gây lệch dòng đầu */
+#highlighting-layer, 
+#highlighting-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block; /* Đảm bảo không có khoảng cách của inline elements */
+}
+
+/* Đưa padding vào thẻ pre để khớp với textarea */
+#highlighting-layer {
+    padding: 20px !important; /* Phải khớp chính xác với padding của #code-editor */
+    box-sizing: border-box !important;
+}
