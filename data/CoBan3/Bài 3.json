@@ -1,0 +1,23 @@
+{
+  "id": 1769268092747,
+  "title": "Bài 3",
+  "desc": "Viết chương trình tính x. Thỏa mãn ax + b = 0\n(a, b là số thực nhập từ bàn phím)\n1 nghiệm -> In giá trị của nghiệm x\nVô nghiệm -> In \"Vo nghiem\"\nVô số nghiệm -> In \"Vo so Nghiem\"",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "2\n-4",
+      "output": "2.00",
+      "point": 30
+    },
+    {
+      "input": "0 0",
+      "output": "Vo so nghiem",
+      "point": 30
+    },
+    {
+      "input": "0 5",
+      "output": "Vo nghiem",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1769268741222,
+  "title": "Bài 8",
+  "desc": "Viết chương trình nhập vào 3 cạnh của một tam giác. Kiểm tra đó có phải tam giác vuông không?\nCó -> \"YES\"\nKhông -> \"NO\"",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "3\n4\n5",
+      "output": "YES",
+      "point": 30
+    },
+    {
+      "input": "5\n5\n5",
+      "output": "NO",
+      "point": 30
+    },
+    {
+      "input": "12\n5\n13",
+      "output": "YES",
+      "point": 40
+    }
+  ]
+}

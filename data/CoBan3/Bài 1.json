@@ -1,0 +1,38 @@
+{
+  "id": 1769267366400,
+  "title": "Bài 1",
+  "desc": "Viết chương trình nhập vào số nguyên dương. In ra \"CHAN\" hoặc \"LE\"",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "4",
+      "output": "CHAN",
+      "point": 15
+    },
+    {
+      "input": "9223372036854775806",
+      "output": "CHAN",
+      "point": 15
+    },
+    {
+      "input": "3",
+      "output": "LE",
+      "point": 15
+    },
+    {
+      "input": "9223372036854775807",
+      "output": "LE",
+      "point": 15
+    },
+    {
+      "input": "0",
+      "output": "CHAN",
+      "point": 20
+    },
+    {
+      "input": "1",
+      "output": "LE",
+      "point": 20
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1769268605538,
+  "title": "Bài 6",
+  "desc": "Viết chương trình nhập vào số nguyên dương n; kiểm tra n có phải số chính phương không? (Biết căn bậc 2 của 1 số chính phương là một số nguyên)\nCó -> YES\nKhông -> NO",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "16",
+      "output": "YES",
+      "point": 30
+    },
+    {
+      "input": "10",
+      "output": "NO",
+      "point": 30
+    },
+    {
+      "input": "121",
+      "output": "YES",
+      "point": 40
+    }
+  ]
+}

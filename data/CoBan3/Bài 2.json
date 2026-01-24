@@ -1,0 +1,33 @@
+{
+  "id": 1769267513953,
+  "title": "Bài 2",
+  "desc": "Cho 3 số a, b, c đọc từ bàn phím. In ra số lớn nhất",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5\n2\n7",
+      "output": "7",
+      "point": 25
+    },
+    {
+      "input": "-5.5\n-2.1\n-10.8",
+      "output": "-2.1",
+      "point": 25
+    },
+    {
+      "input": "100\n1\n1",
+      "output": "100",
+      "point": 25
+    },
+    {
+      "input": "17\n2\n14",
+      "output": "17",
+      "point": 25
+    },
+    {
+      "input": "23\n24\n22",
+      "output": "24",
+      "point": 25
+    }
+  ]
+}

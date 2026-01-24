@@ -1,0 +1,23 @@
+{
+  "id": 1769269195187,
+  "title": "Bài 9*",
+  "desc": "Công ty TNHH MTV kinh doanh nước sạch trên địa bàn một tỉnh quy định giá bán nước sạch sinh hoạt cho các hộ dân cư trong địa bàn tỉnh như sau:\nTừ m^3 thứ 1 đến thứ 5: 6500đ/m^3\n6 -> 15: 7800đ/m^3\n16 -> 25: 9200đ/m^3\n26 -> ...: 10300đ/m^3\nTính số tiền cho công ty nước sạch của một hộ gia đình trong một tháng, biết rằng thuế VAT và phí nước thải là 12%\nDữ liệu: Nhập từ bàn phím số nguyên dương N (0 < N <= 1000) là số m^3 nước sạch mà hộ gia đình dùng trong một tháng\nKết quả: In ra màn hình 3 giá trị tương ứng trên 3 dòng.\nDòng 1: Số tiền tương ứng với giá bán nước của công ty\nDòng 2: Số tiền tương ứng với thuế VAT và phí nước thải\nDòng 3: Tổng số tiền mà hộ gia đình đó phải trả trong tháng đó\nVD:\nDữ liệu vào:\n5\nDữ liệu ra:\n32500\n3900\n36400",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5",
+      "output": "32500\n3900\n36400",
+      "point": 30
+    },
+    {
+      "input": "20",
+      "output": "156500\n18780\n175280",
+      "point": 30
+    },
+    {
+      "input": "30",
+      "output": "25400\n30480\n284480",
+      "point": 40
+    }
+  ]
+}

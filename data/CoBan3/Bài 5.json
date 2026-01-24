@@ -1,0 +1,23 @@
+{
+  "id": 1769268451529,
+  "title": "Bài 5",
+  "desc": "Nhập vào năm; Kiểm tra năm đó có phải năm nhuận không\nCó -> \"YES\"\nKhông -> \"NO\"\n[Năm nhuận chia hết cho 4; không chia hết cho 100]\n[Hoặc những năm chia hết cho 400 cũng là năm nhuận]",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "2000",
+      "output": "YES",
+      "point": 30
+    },
+    {
+      "input": "1900",
+      "output": "NO",
+      "point": 30
+    },
+    {
+      "input": "400",
+      "output": "YES",
+      "point": 40
+    }
+  ]
+}

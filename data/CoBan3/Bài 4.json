@@ -1,0 +1,23 @@
+{
+  "id": 1769268261030,
+  "title": "Bài 4",
+  "desc": "Nhập vào ngày tháng năm. Kiểm tra ngày, tháng, năm đó có hợp lệ không?\nCó -> In \"YES\"\nKhông -> In \"NO\"\nVí dụ:\n20 12 2026 -> YES\n32 13 -1 -> NO",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "29 2 2024",
+      "output": "YES",
+      "point": 30
+    },
+    {
+      "input": "31 4 2023",
+      "output": "NO",
+      "point": 30
+    },
+    {
+      "input": "32 13 -1",
+      "output": "NO",
+      "point": 40
+    }
+  ]
+}
