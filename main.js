@@ -164,13 +164,19 @@ function saveCurrentCodeToLocal() {
 
 // ========== 4. CHẤM BÀI VỚI PISTON (CẢI TIẾN HIỂN THỊ TERMINAL) ==========
 function compareOutputs(received, expected) {
-    const recStr = received.trim();
-    const expStr = expected.trim();
+    // Trim từng dòng để xử lý \r\n (Windows) và trailing spaces
+    const normalize = str => str.split('\n').map(l => l.trim()).join('\n').trim();
+    const recStr = normalize(received);
+    const expStr = normalize(expected);
     if (recStr === expStr) return true;
-    const recNum = parseFloat(recStr);
-    const expNum = parseFloat(expStr);
-    if (!isNaN(recNum) && !isNaN(expNum)) {
-        return Math.abs(recNum - expNum) <= 0.0001;
+
+    // So sánh số thực chỉ áp dụng khi output là 1 dòng đơn
+    if (!recStr.includes('\n') && !expStr.includes('\n')) {
+        const recNum = parseFloat(recStr);
+        const expNum = parseFloat(expStr);
+        if (!isNaN(recNum) && !isNaN(expNum)) {
+            return Math.abs(recNum - expNum) <= 0.0001;
+        }
     }
     return false;
 }
