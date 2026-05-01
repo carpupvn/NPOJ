@@ -157,7 +157,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (qua Cloudflare Worker)...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">Đang kết nối máy chủ chấm bài ...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -171,7 +171,6 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            // Gọi qua worker (proxy CORS)
             const response = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -188,20 +187,20 @@ async function runCode() {
             const stderr = (result.run?.stderr || "").trim();
 
             if (stderr) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
+                testDiv.innerHTML = `<span style="color:#ef4444">Lỗi thực thi Test ${i+1}</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+                testDiv.innerHTML = `<span style="color:#4ade80">Test ${i+1}: Đúng (+${p}đ)</span>`;
             } else {
-                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                testDiv.innerHTML = `<span style="color:#f43f5e">Test ${i+1}: Sai</span>
                     <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
-                        🔸 Nhận được: ${escapeHtml(output)}
+                        Kỳ vọng: ${escapeHtml(test.output)}<br>
+                        Nhận được: ${escapeHtml(output)}
                     </div>`;
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">Lỗi kết nối Test ${i+1}: ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
@@ -209,7 +208,7 @@ async function runCode() {
         await new Promise(r => setTimeout(r, 80));
     }
 
-    status.innerText = `📊 KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
+    status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
     if (earnedPoints >= 100) showCongrats();
 }
