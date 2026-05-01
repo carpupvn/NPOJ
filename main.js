@@ -130,7 +130,7 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. ENGINE CHẤM BÀI
+// 4. ENGINE CHẤM BÀI DÙNG WANDBOX API
 // ================================
 function compareOutputs(received, expected) {
     const recStr = received.trim().replace(/\r/g, '');
@@ -144,13 +144,45 @@ function compareOutputs(received, expected) {
     return false;
 }
 
+async function executeWithWandbox(language, sourceCode, stdin) {
+    let compiler;
+    if (language === 'python') {
+        compiler = 'python-3.12.3';
+    } else if (language === 'cpp') {
+        compiler = 'gcc-14.1.0';
+    } else {
+        throw new Error(`Ngôn ngữ ${language} không được hỗ trợ`);
+    }
+
+    const response = await fetch('https://wandbox.org/api/compile.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            compiler: compiler,
+            code: sourceCode,
+            stdin: stdin,
+            options: 'warning',
+            compiler_option_raw: ''
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const output = (data.program_output || '').trim();
+    const error = (data.stderr || data.compiler_error || '').trim();
+    return { output, error };
+}
+
 async function runCode() {
     const code = document.getElementById('code-editor').value;
     const status = document.getElementById('judge-status');
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Wandbox)...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -164,23 +196,10 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    language: activeProb.lang === "cpp" ? "cpp" : "python",
-                    version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
-                    files: [{ content: code }],
-                    stdin: test.input
-                })
-            });
+            const { output, error } = await executeWithWandbox(activeProb.lang, code, test.input);
 
-            const result = await response.json();
-            const output = (result.run?.output || "").trim();
-            const stderr = (result.run?.stderr || "").trim();
-
-            if (stderr) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
+            if (error) {
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(error)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
@@ -192,18 +211,17 @@ async function runCode() {
                         🔸 Nhận được: ${escapeHtml(output)}
                     </div>`;
             }
-        } catch (e) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI SERVER</span>`;
+        } catch (err) {
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
         term.scrollTop = term.scrollHeight;
-        await new Promise(r => setTimeout(r, 30));
+        await new Promise(r => setTimeout(r, 50));
     }
 
     status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
-
     if (earnedPoints >= 100) showCongrats();
 }
 
@@ -318,18 +336,16 @@ function renderAdminProblems() {
     `).join('');
 }
 
-// Mở form editor để tạo mới
 function openEditor() {
     editingProblemId = null;
     document.getElementById('adm-title').value = '';
     document.getElementById('adm-desc').value = '';
     document.getElementById('adm-lang').value = 'python';
     document.getElementById('test-container').innerHTML = '';
-    addTestUI(); // thêm 1 test mặc định
+    addTestUI();
     switchView('editor');
 }
 
-// Mở form để sửa bài tập có sẵn
 function editProblemWithForm(id) {
     const p = problems.find(x => String(x.id) === String(id));
     if (!p) return;
@@ -339,13 +355,12 @@ function editProblemWithForm(id) {
     document.getElementById('adm-lang').value = p.lang;
     const container = document.getElementById('test-container');
     container.innerHTML = '';
-    p.tests.forEach((test, idx) => {
+    p.tests.forEach((test) => {
         addTestUI(test.input, test.output, test.point);
     });
     switchView('editor');
 }
 
-// Thêm một dòng test case mới vào form
 function addTestUI(inputVal = '', outputVal = '', pointVal = '') {
     const container = document.getElementById('test-container');
     const testDiv = document.createElement('div');
@@ -359,7 +374,6 @@ function addTestUI(inputVal = '', outputVal = '', pointVal = '') {
     container.appendChild(testDiv);
 }
 
-// Lưu bài tập (tạo mới hoặc cập nhật) từ form
 function saveProblem() {
     const title = document.getElementById('adm-title').value.trim();
     const desc = document.getElementById('adm-desc').value.trim();
@@ -385,7 +399,6 @@ function saveProblem() {
     }
 
     if (editingProblemId === null) {
-        // Tạo mới
         const newId = Date.now();
         const newProb = {
             id: newId,
@@ -397,7 +410,6 @@ function saveProblem() {
         problems.push(newProb);
         alert(`Đã tạo bài tập "${title}". Nhấn "Copy JSON" để lưu vào file.`);
     } else {
-        // Cập nhật
         const index = problems.findIndex(p => p.id === editingProblemId);
         if (index !== -1) {
             problems[index] = {
