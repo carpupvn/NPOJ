@@ -2,10 +2,10 @@
 // NPOJ - HỆ THỐNG CHẤM BÀI DÙNG JDOODLE API
 // ================================
 
-// === THÔNG TIN API JDOODLE (ĐÃ ĐIỀN) ===
+// === THÔNG TIN API JDOODLE ===
 const JDoodleClientId = '2f7918f84131a695ccc99bd133e72492';
 const JDoodleClientSecret = '9eae61b386e8acd32f1b0419283e5921717904bb78c6e3bfad05e5aa28cecf8a';
-// === HÃY RESET SECRET SAU KHI THỬ ===
+// === QUAN TRỌNG: Hãy reset Secret này ngay sau khi thử xong để bảo mật! ===
 
 let problems = [];
 let activeProb = null;
@@ -151,7 +151,7 @@ function compareOutputs(received, expected) {
 }
 
 // ================================
-// 5. CHẤM BÀI DÙNG JDOODLE API
+// 5. CHẤM BÀI VỚI JDOODLE CLIENT (KHÔNG CORS)
 // ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -159,11 +159,20 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối JDoodle API... (200 credits/ngày miễn phí)</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối JDoodle API... (200 credits/ngày)</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
     let earnedPoints = 0;
+
+    // Kiểm tra xem thư viện jdoodle-client đã được tải chưa
+    if (typeof JDoodleCompiler === 'undefined') {
+        term.innerHTML = '<div style="color:#ef4444">❌ LỖI: Thư viện JDoodle chưa được tải. Hãy kiểm tra lại file index.html.</div>';
+        status.innerText = "LỖI CẤU HÌNH";
+        return;
+    }
+
+    const compiler = new JDoodleCompiler(JDoodleClientId, JDoodleClientSecret);
 
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
@@ -173,39 +182,28 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            const response = await fetch('https://api.jdoodle.com/v1/execute', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    clientId: JDoodleClientId,
-                    clientSecret: JDoodleClientSecret,
-                    script: code,
-                    stdin: test.input,
-                    language: activeProb.lang === "cpp" ? "cpp" : "python3",
-                    versionIndex: "0"
-                })
+            const result = await compiler.execute({
+                script: code,
+                stdin: test.input,
+                language: activeProb.lang === "cpp" ? "cpp" : "python3",
+                versionIndex: "0"
             });
 
-            const result = await response.json();
+            const output = (result.output || "").trim();
 
-            if (result.error) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI JDoodle</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(result.error)}</pre>`;
+            if (compareOutputs(output, test.output)) {
+                const p = parseInt(test.point) || 0;
+                earnedPoints += p;
+                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
             } else {
-                const output = (result.output || "").trim();
-                if (compareOutputs(output, test.output)) {
-                    const p = parseInt(test.point) || 0;
-                    earnedPoints += p;
-                    testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
-                } else {
-                    testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
-                        <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                            🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
-                            🔸 Nhận được: ${escapeHtml(output)}
-                        </div>`;
-                }
+                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                    <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
+                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
+                        🔸 Nhận được: ${escapeHtml(output)}
+                    </div>`;
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
