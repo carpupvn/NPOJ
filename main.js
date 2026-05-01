@@ -1,7 +1,11 @@
+// ================================
+// NPOJ - HỆ THỐNG CHẤM BÀI DÙNG PISTON API (PROXY CỘNG ĐỒNG)
+// ================================
+
 let problems = [];
 let activeProb = null;
 let currentCode = null;
-let editingProblemId = null; // ID bài tập đang sửa trong form, null nếu tạo mới
+let editingProblemId = null;
 
 // ================================
 // 1. TRUY CẬP & ĐỒNG BỘ DỮ LIỆU
@@ -15,14 +19,11 @@ async function accessByCode(forcedCode = null) {
         alert("Vui lòng nhập mã số bài tập!");
         return;
     }
-
     if (loader) loader.style.display = 'block';
-
     try {
         const v = Date.now();
         const response = await fetch(`data/${code}/list.json?v=${v}`);
         if (!response.ok) throw new Error("Mã bài tập không tồn tại!");
-
         const fileConfigs = await response.json();
         const promises = fileConfigs.map(item => 
             fetch(`data/${code}/${encodeURIComponent(item.filename)}.json?v=${v}`)
@@ -130,7 +131,7 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. ENGINE CHẤM BÀI DÙNG WANDBOX API
+// 4. ENGINE CHẤM BÀI DÙNG PISTON API (PROXY MỚI)
 // ================================
 function compareOutputs(received, expected) {
     const recStr = received.trim().replace(/\r/g, '');
@@ -144,45 +145,13 @@ function compareOutputs(received, expected) {
     return false;
 }
 
-async function executeWithWandbox(language, sourceCode, stdin) {
-    let compiler;
-    if (language === 'python') {
-        compiler = 'python-3.12.3';
-    } else if (language === 'cpp') {
-        compiler = 'gcc-14.1.0';
-    } else {
-        throw new Error(`Ngôn ngữ ${language} không được hỗ trợ`);
-    }
-
-    const response = await fetch('https://wandbox.org/api/compile.json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            compiler: compiler,
-            code: sourceCode,
-            stdin: stdin,
-            options: 'warning',
-            compiler_option_raw: ''
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const output = (data.program_output || '').trim();
-    const error = (data.stderr || data.compiler_error || '').trim();
-    return { output, error };
-}
-
 async function runCode() {
     const code = document.getElementById('code-editor').value;
     const status = document.getElementById('judge-status');
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Wandbox)...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Piston API)...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -196,10 +165,23 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            const { output, error } = await executeWithWandbox(activeProb.lang, code, test.input);
+            const response = await fetch('https://piston-proxy.khoa.dev/execute', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    language: activeProb.lang === "cpp" ? "cpp" : "python",
+                    version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
+                    files: [{ content: code }],
+                    stdin: test.input
+                })
+            });
 
-            if (error) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(error)}</pre>`;
+            const result = await response.json();
+            const output = (result.run?.output || "").trim();
+            const stderr = (result.run?.stderr || "").trim();
+
+            if (stderr) {
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
@@ -212,7 +194,7 @@ async function runCode() {
                     </div>`;
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Lỗi kết nối tới hệ thống chấm bài: ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
@@ -220,7 +202,7 @@ async function runCode() {
         await new Promise(r => setTimeout(r, 50));
     }
 
-    status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
+    status.innerText = `📊 KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
     if (earnedPoints >= 100) showCongrats();
 }
