@@ -1,8 +1,11 @@
 let problems = [];
 let activeProb = null;
 let currentCode = null;
+let editingProblemId = null; // ID bài tập đang sửa trong form, null nếu tạo mới
 
-// --- 1. QUẢN LÝ TRUY CẬP THEO MÃ (MỚI) ---
+// ================================
+// 1. TRUY CẬP & ĐỒNG BỘ DỮ LIỆU
+// ================================
 async function accessByCode(forcedCode = null) {
     const codeInput = document.getElementById('exercise-code');
     const code = forcedCode || codeInput.value.trim();
@@ -17,31 +20,22 @@ async function accessByCode(forcedCode = null) {
 
     try {
         const v = Date.now();
-        // Truy cập vào folder mã số để lấy list.json
         const response = await fetch(`data/${code}/list.json?v=${v}`);
-        
         if (!response.ok) throw new Error("Mã bài tập không tồn tại!");
 
         const fileConfigs = await response.json();
-        
-        // Tải chi tiết các file .json bài tập trong folder đó
         const promises = fileConfigs.map(item => 
             fetch(`data/${code}/${encodeURIComponent(item.filename)}.json?v=${v}`)
                 .then(res => res.ok ? res.json() : null)
         );
-        
         const results = await Promise.all(promises);
         problems = results.filter(p => p !== null);
         currentCode = code;
 
-        // Lưu mã vào URL mà không load lại trang
         const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?ma=${code}`;
         window.history.pushState({ path: newUrl }, '', newUrl);
-
-        // Hiển thị giao diện
         document.getElementById('display-ma').innerText = code;
         switchView('user');
-
     } catch (e) {
         alert(e.message);
         logout();
@@ -51,23 +45,20 @@ async function accessByCode(forcedCode = null) {
 }
 
 function logout() {
-    // Xóa tham số URL
     const baseUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({ path: baseUrl }, '', baseUrl);
-    
     problems = [];
     currentCode = null;
-    
-    // Reset giao diện về màn hình chào
     document.getElementById('app-content').classList.add('hidden');
     const viewStart = document.getElementById('view-start');
     viewStart.style.display = 'flex';
     viewStart.classList.add('active');
-    
     document.getElementById('exercise-code').value = '';
 }
 
-// --- 2. QUẢN LÝ GIAO DIỆN ---
+// ================================
+// 2. QUẢN LÝ VIEW
+// ================================
 function switchView(v) {
     const allViews = document.querySelectorAll('.view');
     const viewStart = document.getElementById('view-start');
@@ -75,7 +66,7 @@ function switchView(v) {
 
     allViews.forEach(view => {
         view.classList.remove('active');
-        view.style.display = 'none'; 
+        view.style.display = 'none';
     });
 
     if (v === 'start') {
@@ -86,7 +77,6 @@ function switchView(v) {
         viewStart.style.display = 'none';
         viewStart.classList.remove('active');
         appContent.classList.remove('hidden');
-        
         const target = document.getElementById('view-' + v);
         if (target) {
             target.style.display = 'block';
@@ -99,24 +89,24 @@ function switchView(v) {
     applyButtonEffects();
 }
 
-// --- 3. HIỂN THỊ BÀI TẬP ---
+// ================================
+// 3. USER: HIỂN THỊ BÀI TẬP & MỞ SOLVE
+// ================================
 function renderUserProblems() {
     const grid = document.getElementById('prob-grid');
     if (!grid) return;
-    
     if (problems.length === 0) {
         grid.innerHTML = "<p style='color:#94a3b8; grid-column:1/-1; text-align:center;'>Folder này chưa có bài tập nào.</p>";
         return;
     }
-
     grid.innerHTML = problems.map(p => `
         <div class="card problem-card" onclick="openSolve('${p.id}')">
             <div class="prob-status" style="background: ${p.lang === 'cpp' ? '#3b82f6' : '#eab308'}">
                 ${p.lang.toUpperCase()}
             </div>
-            <h3 style="margin:10px 0">${p.title}</h3>
+            <h3 style="margin:10px 0">${escapeHtml(p.title)}</h3>
             <p style="color:#94a3b8; font-size:13px; line-height:1.5; margin-bottom:0">
-                ${p.desc.substring(0, 100)}${p.desc.length > 100 ? '...' : ''}
+                ${escapeHtml(p.desc.substring(0, 100))}${p.desc.length > 100 ? '...' : ''}
             </p>
         </div>
     `).join('');
@@ -131,20 +121,20 @@ function openSolve(id) {
     document.getElementById('lang-tag').innerText = activeProb.lang.toUpperCase();
     document.getElementById('terminal').innerHTML = '';
     document.getElementById('code-editor').value = '';
-    
     const status = document.getElementById('judge-status');
     status.innerText = "Sẵn sàng.";
     status.style.color = "#94a3b8";
-    
     updateHighlighting();
     switchView('solve');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- 4. ENGINE CHẤM BÀI (GIỮ NGUYÊN LOGIC CỦA BẠN) ---
+// ================================
+// 4. ENGINE CHẤM BÀI
+// ================================
 function compareOutputs(received, expected) {
-    const recStr = received.trim();
-    const expStr = expected.trim();
+    const recStr = received.trim().replace(/\r/g, '');
+    const expStr = expected.trim().replace(/\r/g, '');
     if (recStr === expStr) return true;
     const recNum = parseFloat(recStr);
     const expNum = parseFloat(expStr);
@@ -153,25 +143,14 @@ function compareOutputs(received, expected) {
     }
     return false;
 }
-// Thêm hàm định dạng kết quả giống OJ chuyên nghiệp
-function getStatusLabel(status) {
-    const labels = {
-        'AC': { text: 'ACCEPTED', color: '#4ade80' },
-        'WA': { text: 'WRONG ANSWER', color: '#f43f5e' },
-        'TLE': { text: 'TIME LIMIT EXCEEDED', color: '#fbbf24' },
-        'ERR': { text: 'RUNTIME ERROR', color: '#ef4444' }
-    };
-    const s = labels[status] || labels['ERR'];
-    return `<span style="color: ${s.color}; font-weight: bold;">[${s.text}]</span>`;
-}
 
 async function runCode() {
     const code = document.getElementById('code-editor').value;
     const status = document.getElementById('judge-status');
     const term = document.getElementById('terminal');
     if (!activeProb) return;
-    
-    term.innerHTML = `<span style="color:#60a5fa">>> Đang kết nối máy chủ chấm bài...</span>\n`;
+
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -179,8 +158,11 @@ async function runCode() {
 
     for (let i = 0; i < activeProb.tests.length; i++) {
         const test = activeProb.tests[i];
-        term.innerHTML += `<span style="color:#94a3b8">Test ${i+1}: </span>`;
-        
+        const testDiv = document.createElement('div');
+        testDiv.style.marginBottom = '12px';
+        testDiv.style.borderLeft = '3px solid #334155';
+        testDiv.style.paddingLeft = '10px';
+
         try {
             const response = await fetch("https://emkc.org/api/v2/piston/execute", {
                 method: "POST",
@@ -192,52 +174,53 @@ async function runCode() {
                     stdin: test.input
                 })
             });
-            
+
             const result = await response.json();
             const output = (result.run?.output || "").trim();
-            const stderr = result.run?.stderr || "";
+            const stderr = (result.run?.stderr || "").trim();
 
             if (stderr) {
-                term.innerHTML += `<span style="color:#ef4444">[LỖI THỰC THI]</span>\n`;
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                term.innerHTML += `<span style="color:#4ade80">[ĐÚNG]</span> (+${p}đ)\n`;
+                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
             } else {
-                term.innerHTML += `<span style="color:#f43f5e">[SAI]</span>\n`;
+                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                    <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
+                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
+                        🔸 Nhận được: ${escapeHtml(output)}
+                    </div>`;
             }
-        } catch (e) { 
-            term.innerHTML += `<span style="color:#ef4444">[LỖI KẾT NỐI]</span>\n`; 
+        } catch (e) {
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI SERVER</span>`;
         }
+
+        term.appendChild(testDiv);
         term.scrollTop = term.scrollHeight;
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 30));
     }
-    
-    // Hiển thị điểm dạng 120/100 theo yêu cầu
+
     status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
 
     if (earnedPoints >= 100) showCongrats();
 }
-// --- 5. EDITOR & HIỆU ỨNG (GIỮ NGUYÊN) ---
+
+// ================================
+// 5. EDITOR THÔNG MINH
+// ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
     const display = document.getElementById('highlighting-content');
     const hlLayer = document.getElementById('highlighting-layer');
-    
     if (editor && display) {
         let lang = (activeProb && activeProb.lang === 'cpp') ? 'cpp' : 'python';
         display.className = `language-${lang}`;
-        
-        // SỬA TẠI ĐÂY: Gán trực tiếp giá trị và chỉ thêm dấu cách ảo ở CUỐI để fix lỗi dòng cuối
         let content = editor.value;
         if (content.endsWith("\n")) content += " ";
-        
-        display.textContent = content; 
-        
+        display.textContent = content;
         if (window.Prism) Prism.highlightElement(display);
-
-        // Đồng bộ cuộn
         if (hlLayer) {
             hlLayer.scrollTop = editor.scrollTop;
             hlLayer.scrollLeft = editor.scrollLeft;
@@ -250,12 +233,9 @@ function handleEditorKeys(e) {
     const s = editor.selectionStart;
     const v = editor.value;
 
-    // --- SMART BACKSPACE ---
     if (e.key === 'Backspace' && s === editor.selectionEnd) {
         const lineStart = v.lastIndexOf('\n', s - 1) + 1;
         const textBeforeCursor = v.substring(lineStart, s);
-        
-        // Nếu phía trước con trỏ chỉ toàn khoảng trắng và chia hết cho 4
         if (textBeforeCursor.length > 0 && textBeforeCursor.trim() === '' && textBeforeCursor.length % 4 === 0) {
             e.preventDefault();
             editor.value = v.substring(0, s - 4) + v.substring(s);
@@ -265,15 +245,14 @@ function handleEditorKeys(e) {
         }
     }
 
-    // 1. Xử lý phím Tab (Thêm đúng 4 dấu cách)
     if (e.key === 'Tab') {
         e.preventDefault();
         editor.value = v.substring(0, s) + "    " + v.substring(editor.selectionEnd);
         editor.selectionStart = editor.selectionEnd = s + 4;
         updateHighlighting();
+        return;
     }
-    
-    // 2. Tự động đóng ngoặc (Giữ nguyên)
+
     const pairs = { '{': '}', '(': ')', '[': ']', '"': '"', "'": "'" };
     if (pairs[e.key]) {
         e.preventDefault();
@@ -281,37 +260,24 @@ function handleEditorKeys(e) {
         editor.value = v.substring(0, s) + e.key + close + v.substring(editor.selectionEnd);
         editor.selectionStart = editor.selectionEnd = s + 1;
         updateHighlighting();
+        return;
     }
 
-    // 3. Xử lý phím Enter (FIX lỗi lùi đầu dòng bị dư)
     if (e.key === 'Enter') {
         e.preventDefault();
-        
-        // Lấy nội dung của dòng hiện tại để tính toán indent
         const lines = v.substring(0, s).split('\n');
         const lastLine = lines[lines.length - 1];
-        
-        // Chỉ lấy những khoảng trắng thực sự có ở đầu dòng (không lấy tab ảo)
-        const indentMatch = lastLine.match(/^[ ]*/); 
+        const indentMatch = lastLine.match(/^[ ]*/);
         const indent = indentMatch ? indentMatch[0] : "";
-        
         let extraIndent = "";
-        // Chỉ thêm thụt lề nếu có dấu : hoặc {
-        if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) {
-            extraIndent = "    ";
-        } else if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) {
-            extraIndent = "    ";
-        }
-
+        if (activeProb?.lang === 'python' && lastLine.trim().endsWith(':')) extraIndent = "    ";
+        if (activeProb?.lang === 'cpp' && lastLine.trim().endsWith('{')) extraIndent = "    ";
         const charBefore = v[s - 1];
         const charAfter = v[s];
-
-        // Enter giữa cặp dấu ngoặc {|}
         if (charBefore === '{' && charAfter === '}') {
             editor.value = v.substring(0, s) + "\n" + indent + "    \n" + indent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + indent.length + 5;
         } else {
-            // Xuống dòng với đúng lượng indent của dòng trước
             editor.value = v.substring(0, s) + "\n" + indent + extraIndent + v.substring(s);
             editor.selectionStart = editor.selectionEnd = s + 1 + indent.length + extraIndent.length;
         }
@@ -320,100 +286,224 @@ function handleEditorKeys(e) {
 }
 
 function applyButtonEffects() {
-    const btns = document.querySelectorAll('button');
-    btns.forEach(btn => {
+    document.querySelectorAll('button').forEach(btn => {
         btn.onmouseover = () => btn.style.transform = "translateY(-2px)";
         btn.onmouseout = () => btn.style.transform = "translateY(0)";
     });
 }
 
-// --- 6. KHỞI TẠO HỆ THỐNG ---
-window.onload = () => {
-    // Xử lý mã từ URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const savedCode = urlParams.get('ma');
-    if (savedCode) accessByCode(savedCode);
-
-    // Enter để vào bài tập
-    const codeInput = document.getElementById('exercise-code');
-    if (codeInput) {
-        codeInput.onkeyup = (e) => {
-            if (e.key === 'Enter') accessByCode();
-        };
+// ================================
+// 6. QUẢN TRỊ (ADMIN) - DÙNG FORM
+// ================================
+function renderAdminProblems() {
+    const container = document.getElementById('admin-list');
+    if (!container) return;
+    if (problems.length === 0) {
+        container.innerHTML = '<div class="card" style="grid-column:1/-1; text-align:center;">Chưa có bài tập nào. Hãy tạo mới.</div>';
+        return;
     }
-
-    // Đồng bộ cuộn Editor
-    const ed = document.getElementById('code-editor');
-    const hlLayer = document.getElementById('highlighting-layer');
-    if(ed && hlLayer) {
-        ed.onkeydown = handleEditorKeys;
-        ed.oninput = updateHighlighting;
-        
-        // Ép lớp layer cuộn theo textarea
-        ed.onscroll = () => {
-            hlLayer.scrollTop = ed.scrollTop;
-            hlLayer.scrollLeft = ed.scrollLeft;
-        };
-    }
-    applyButtonEffects(); 
-};
-
-function authAdmin() {
-    if (prompt("Mã bảo mật:") === "05122010") switchView('admin');
+    container.innerHTML = problems.map(p => `
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:20px">
+            <div>
+                <div style="font-size:12px; color:#3b82f6;">ID: ${p.id}</div>
+                <h3 style="margin:5px 0">${escapeHtml(p.title)}</h3>
+                <small style="color:#94a3b8">${p.lang.toUpperCase()} | ${p.tests.length} testcases</small>
+            </div>
+            <div style="display:flex; gap:10px">
+                <button class="btn-outline" onclick="copyProblemJSON('${p.id}')">📋 Copy JSON</button>
+                <button class="btn-outline" onclick="editProblemWithForm('${p.id}')">✏️ Sửa</button>
+                <button class="btn-outline" onclick="deleteProblem('${p.id}')" style="color:#f43f5e">🗑 Xóa</button>
+            </div>
+        </div>
+    `).join('');
 }
 
-// Hàm tạo pháo hoa
+// Mở form editor để tạo mới
+function openEditor() {
+    editingProblemId = null;
+    document.getElementById('adm-title').value = '';
+    document.getElementById('adm-desc').value = '';
+    document.getElementById('adm-lang').value = 'python';
+    document.getElementById('test-container').innerHTML = '';
+    addTestUI(); // thêm 1 test mặc định
+    switchView('editor');
+}
+
+// Mở form để sửa bài tập có sẵn
+function editProblemWithForm(id) {
+    const p = problems.find(x => String(x.id) === String(id));
+    if (!p) return;
+    editingProblemId = p.id;
+    document.getElementById('adm-title').value = p.title;
+    document.getElementById('adm-desc').value = p.desc;
+    document.getElementById('adm-lang').value = p.lang;
+    const container = document.getElementById('test-container');
+    container.innerHTML = '';
+    p.tests.forEach((test, idx) => {
+        addTestUI(test.input, test.output, test.point);
+    });
+    switchView('editor');
+}
+
+// Thêm một dòng test case mới vào form
+function addTestUI(inputVal = '', outputVal = '', pointVal = '') {
+    const container = document.getElementById('test-container');
+    const testDiv = document.createElement('div');
+    testDiv.className = 'testcase-row';
+    testDiv.innerHTML = `
+        <input type="text" class="input-modern" placeholder="Input" value="${escapeHtml(String(inputVal))}">
+        <input type="text" class="input-modern" placeholder="Output" value="${escapeHtml(String(outputVal))}">
+        <input type="number" class="input-modern" placeholder="Điểm" value="${pointVal || '20'}">
+        <button class="btn-outline" onclick="this.parentElement.remove()" style="grid-column:span 3; background:#f43f5e20">❌ Xóa test</button>
+    `;
+    container.appendChild(testDiv);
+}
+
+// Lưu bài tập (tạo mới hoặc cập nhật) từ form
+function saveProblem() {
+    const title = document.getElementById('adm-title').value.trim();
+    const desc = document.getElementById('adm-desc').value.trim();
+    const lang = document.getElementById('adm-lang').value;
+    const testDivs = document.querySelectorAll('#test-container .testcase-row');
+    const tests = [];
+    for (let div of testDivs) {
+        const inputs = div.querySelectorAll('input');
+        const inputVal = inputs[0].value.trim();
+        const outputVal = inputs[1].value.trim();
+        const pointVal = parseInt(inputs[2].value) || 0;
+        if (inputVal !== '' && outputVal !== '') {
+            tests.push({ input: inputVal, output: outputVal, point: pointVal });
+        }
+    }
+    if (!title) {
+        alert("Vui lòng nhập tên bài tập");
+        return;
+    }
+    if (tests.length === 0) {
+        alert("Cần ít nhất một test case");
+        return;
+    }
+
+    if (editingProblemId === null) {
+        // Tạo mới
+        const newId = Date.now();
+        const newProb = {
+            id: newId,
+            title: title,
+            desc: desc,
+            lang: lang,
+            tests: tests
+        };
+        problems.push(newProb);
+        alert(`Đã tạo bài tập "${title}". Nhấn "Copy JSON" để lưu vào file.`);
+    } else {
+        // Cập nhật
+        const index = problems.findIndex(p => p.id === editingProblemId);
+        if (index !== -1) {
+            problems[index] = {
+                ...problems[index],
+                title: title,
+                desc: desc,
+                lang: lang,
+                tests: tests
+            };
+            alert(`Đã cập nhật bài tập "${title}". Nhấn "Copy JSON" để lưu thay đổi.`);
+        }
+    }
+    renderAdminProblems();
+    switchView('admin');
+}
+
+function deleteProblem(id) {
+    if (confirm("Xóa bài tập này vĩnh viễn?")) {
+        problems = problems.filter(p => String(p.id) !== String(id));
+        renderAdminProblems();
+    }
+}
+
+function copyProblemJSON(id) {
+    const p = problems.find(x => String(x.id) === String(id));
+    if (!p) return;
+    const json = JSON.stringify(p, null, 2);
+    navigator.clipboard.writeText(json).then(() => {
+        alert(`Đã copy JSON của "${p.title}" vào clipboard. Bạn có thể paste vào file .json và upload lên GitHub.`);
+    }).catch(() => alert("Không thể copy, hãy thủ công sao chép."));
+}
+
+// ================================
+// 7. PHÁO HOA & CHÚC MỪNG
+// ================================
 function launchFireworks() {
     const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#fff', '#ff4500'];
     for (let i = 0; i < 50; i++) {
         setTimeout(() => {
             const particle = document.createElement('div');
             particle.className = 'firework-particle';
-            
-            // Vị trí xuất hiện ngẫu nhiên
             const x = Math.random() * window.innerWidth;
             const y = window.innerHeight;
             const color = colors[Math.floor(Math.random() * colors.length)];
-            
             particle.style.left = x + 'px';
             particle.style.top = y + 'px';
             particle.style.backgroundColor = color;
             particle.style.boxShadow = `0 0 10px ${color}`;
-            
             document.body.appendChild(particle);
-            
-            // Hiệu ứng bay lên và nổ
             const destX = x + (Math.random() - 0.5) * 200;
             const destY = Math.random() * (window.innerHeight * 0.5);
-            
             particle.animate([
                 { transform: `translate(0, 0)`, opacity: 1 },
                 { transform: `translate(${destX - x}px, ${destY - y}px)`, opacity: 0 }
-            ], {
-                duration: 1000 + Math.random() * 1000,
-                easing: 'ease-out',
-                fill: 'forwards'
-            });
-
+            ], { duration: 1000 + Math.random() * 1000, easing: 'ease-out', fill: 'forwards' });
             setTimeout(() => particle.remove(), 2000);
         }, i * 100);
     }
 }
 
-// Hàm hiển thị lời chúc
 function showCongrats() {
     const modal = document.getElementById('congrats-modal');
     modal.classList.add('active');
     launchFireworks();
-    
-    // Tự động ẩn sau 5 giây
-    setTimeout(() => {
-        modal.classList.remove('active');
-    }, 5000);
+    setTimeout(() => modal.classList.remove('active'), 5000);
 }
 
-// --- LOGIC CHÈN VÀO HÀM CHẤM BÀI CỦA BẠN ---
-// Giả sử hàm chấm bài của bạn tính ra biến totalPoint
-if (totalPoint === 100) {
-    showCongrats();
+// ================================
+// 8. TIỆN ÍCH
+// ================================
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    }).replace(/[\n\r]/g, '↵ ');
 }
+
+function authAdmin() {
+    if (prompt("Mã bảo mật:") === "05122010") switchView('admin');
+}
+
+// ================================
+// 9. KHỞI TẠO
+// ================================
+window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const savedCode = urlParams.get('ma');
+    if (savedCode) accessByCode(savedCode);
+
+    const codeInput = document.getElementById('exercise-code');
+    if (codeInput) {
+        codeInput.onkeyup = (e) => { if (e.key === 'Enter') accessByCode(); };
+    }
+
+    const ed = document.getElementById('code-editor');
+    const hlLayer = document.getElementById('highlighting-layer');
+    if (ed && hlLayer) {
+        ed.onkeydown = handleEditorKeys;
+        ed.oninput = updateHighlighting;
+        ed.addEventListener('scroll', () => {
+            hlLayer.scrollTop = ed.scrollTop;
+            hlLayer.scrollLeft = ed.scrollLeft;
+        });
+    }
+    applyButtonEffects();
+};
