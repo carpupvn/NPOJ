@@ -1,6 +1,11 @@
 // ================================
-// NPOJ - HỆ THỐNG CHẤM BÀI DÙNG PISTON API (PROXY CỘNG ĐỒNG)
+// NPOJ - HỆ THỐNG CHẤM BÀI DÙNG JDOODLE API
 // ================================
+
+// === THÔNG TIN API JDOODLE (ĐÃ ĐIỀN) ===
+const JDoodleClientId = '2f7918f84131a695ccc99bd133e72492';
+const JDoodleClientSecret = '9eae61b386e8acd32f1b0419283e5921717904bb78c6e3bfad05e5aa28cecf8a';
+// === HÃY RESET SECRET SAU KHI THỬ ===
 
 let problems = [];
 let activeProb = null;
@@ -131,7 +136,7 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. ENGINE CHẤM BÀI DÙNG PISTON API (PROXY MỚI)
+// 4. SO SÁNH KẾT QUẢ
 // ================================
 function compareOutputs(received, expected) {
     const recStr = received.trim().replace(/\r/g, '');
@@ -145,13 +150,16 @@ function compareOutputs(received, expected) {
     return false;
 }
 
+// ================================
+// 5. CHẤM BÀI DÙNG JDOODLE API
+// ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
     const status = document.getElementById('judge-status');
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Piston API)...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối JDoodle API... (200 credits/ngày miễn phí)</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -165,41 +173,44 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            const response = await fetch('https://piston-proxy.khoa.dev/execute', {
+            const response = await fetch('https://api.jdoodle.com/v1/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    language: activeProb.lang === "cpp" ? "cpp" : "python",
-                    version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
-                    files: [{ content: code }],
-                    stdin: test.input
+                    clientId: JDoodleClientId,
+                    clientSecret: JDoodleClientSecret,
+                    script: code,
+                    stdin: test.input,
+                    language: activeProb.lang === "cpp" ? "cpp" : "python3",
+                    versionIndex: "0"
                 })
             });
 
             const result = await response.json();
-            const output = (result.run?.output || "").trim();
-            const stderr = (result.run?.stderr || "").trim();
 
-            if (stderr) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
-            } else if (compareOutputs(output, test.output)) {
-                const p = parseInt(test.point) || 0;
-                earnedPoints += p;
-                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+            if (result.error) {
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI JDoodle</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(result.error)}</pre>`;
             } else {
-                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
-                    <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
-                        🔸 Nhận được: ${escapeHtml(output)}
-                    </div>`;
+                const output = (result.output || "").trim();
+                if (compareOutputs(output, test.output)) {
+                    const p = parseInt(test.point) || 0;
+                    earnedPoints += p;
+                    testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+                } else {
+                    testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                        <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
+                            🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
+                            🔸 Nhận được: ${escapeHtml(output)}
+                        </div>`;
+                }
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Lỗi kết nối tới hệ thống chấm bài: ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
         term.scrollTop = term.scrollHeight;
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise(r => setTimeout(r, 100));
     }
 
     status.innerText = `📊 KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
@@ -208,7 +219,7 @@ async function runCode() {
 }
 
 // ================================
-// 5. EDITOR THÔNG MINH
+// 6. EDITOR THÔNG MINH
 // ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
@@ -293,7 +304,7 @@ function applyButtonEffects() {
 }
 
 // ================================
-// 6. QUẢN TRỊ (ADMIN) - DÙNG FORM
+// 7. QUẢN TRỊ (ADMIN) - DÙNG FORM
 // ================================
 function renderAdminProblems() {
     const container = document.getElementById('admin-list');
@@ -425,7 +436,7 @@ function copyProblemJSON(id) {
 }
 
 // ================================
-// 7. PHÁO HOA & CHÚC MỪNG
+// 8. PHÁO HOA & CHÚC MỪNG
 // ================================
 function launchFireworks() {
     const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#fff', '#ff4500'];
@@ -460,7 +471,7 @@ function showCongrats() {
 }
 
 // ================================
-// 8. TIỆN ÍCH
+// 9. TIỆN ÍCH
 // ================================
 function escapeHtml(str) {
     if (!str) return '';
@@ -477,7 +488,7 @@ function authAdmin() {
 }
 
 // ================================
-// 9. KHỞI TẠO
+// 10. KHỞI TẠO
 // ================================
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
