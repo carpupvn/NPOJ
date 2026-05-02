@@ -111,11 +111,9 @@ button {
     font-size: 24px;
     margin-bottom: 40px;
     background: linear-gradient(to right, var(--primary), var(--accent));
-    background: linear-gradient(to right, var(--primary), var(--accent));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-fill-color: transparent;
 }
 
 .main-body { 
@@ -186,7 +184,7 @@ button {
 .editor-section { 
     position: relative; 
     background: #0d1117; 
-    border-radius: 12px; 
+    border-radius: 16px; 
     border: 1px solid #30363d; 
     overflow: hidden; 
     display: flex; 
@@ -235,6 +233,7 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     color: #94a3b8; 
+    border-bottom: 1px solid #334155;
 }
 
 .terminal-body { 
@@ -247,6 +246,31 @@ button {
     font-size: 13px; 
     line-height: 1.5; 
     border-top: 1px solid #333; 
+}
+
+.terminal-body .test-row {
+    margin-bottom: 12px;
+    border-left: 3px solid #334155;
+    padding-left: 12px;
+}
+
+.terminal-body .test-header {
+    font-weight: bold;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.terminal-body .test-status {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.terminal-body .test-detail {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 /* --- ADMIN & INPUT --- */
@@ -274,7 +298,34 @@ button {
     border: 1px solid var(--border);
 }
 
-/* --- RESPONSIVE (MOBILE TỐI ƯU) --- */
+/* --- RESPONSIVE (MOBILE & TABLET) --- */
+@media (max-width: 900px) {
+    .testcase-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            "input output"
+            "point delete";
+    }
+    .testcase-row input:nth-child(1) { grid-area: input; }
+    .testcase-row input:nth-child(2) { grid-area: output; }
+    .testcase-row input:nth-child(3) { grid-area: point; justify-self: start; }
+    .testcase-row button { grid-area: delete; justify-self: end; }
+}
+
+@media (max-width: 600px) {
+    .testcase-row {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "input"
+            "output"
+            "point"
+            "delete";
+    }
+    .testcase-row button {
+        justify-self: stretch;
+    }
+}
+
 @media (max-width: 768px) {
     body { overflow-y: auto; height: auto; }
     
@@ -292,6 +343,8 @@ button {
         z-index: 1000;
         border-right: none; 
         border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .sidebar h1 { font-size: 18px; margin-bottom: 0; }
@@ -300,37 +353,140 @@ button {
         display: flex !important;
         flex-direction: row !important; 
         gap: 8px; 
+        order: 2;
+        width: 100%;
+        justify-content: space-between;
     }
     
-    .sidebar button {
-        padding: 8px 12px;
-        font-size: 12px;
+    .sidebar nav button {
+        flex: 1;
+        justify-content: center;
+        font-size: 13px;
+        padding: 10px 0;
     }
 
     .sidebar div#current-code-display, 
     .sidebar .footer-info { display: none; }
+    
+    .sidebar button:last-of-type {
+        order: 3;
+        margin-left: auto;
+    }
 
     .main-body { padding: 15px; padding-top: 20px; }
     
+    /* SỬA LỖI MOBILE: IDE CONTAINER */
     .ide-container { 
-        grid-template-columns: 1fr; 
-        height: auto; 
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: 15px;
+        margin-top: 10px;
     }
 
-    .ide-right { 
-        grid-template-rows: 450px 300px; 
+    .ide-left {
+        max-height: 30vh;
+        overflow-y: auto;
+        padding-right: 0;
+        gap: 10px;
     }
-    
+
+    .ide-left .card {
+        padding: 12px;
+    }
+    #solve-desc {
+        font-size: 13px;
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    .ide-right {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        flex: 1;
+        min-height: 55vh;
+    }
+
+    .editor-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 200px;
+    }
+
+    .terminal-body {
+        min-height: 100px;
+        max-height: 25vh;
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .editor-wrapper {
+        flex: 1;
+        min-height: 180px;
+    }
+
+    #code-editor, #highlighting-layer {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .pane-header {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 12px;
+    }
+    .pane-header button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    #lang-tag {
+        font-size: 11px;
+        padding: 2px 8px;
+    }
+
     .grid { grid-template-columns: 1fr; }
     
     #code-editor, #highlighting-layer { 
-        font-size: 16px; /* Chống auto-zoom trên iPhone */
+        font-size: 16px; 
     }
 
-    .testcase-row {
-        grid-template-columns: 1fr;
+    /* Ẩn hiệu ứng hover trên mobile */
+    button:hover {
+        transform: none !important;
+    }
+    
+    /* Admin card trên mobile */
+    #admin-list .card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    #admin-list .card > div:last-child {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    #admin-list button {
+        padding: 6px 10px;
+        font-size: 11px;
     }
 }
+
+@media (max-width: 480px) {
+    #congrats-modal {
+        width: 90%;
+        padding: 20px 15px;
+    }
+    #congrats-modal h2 {
+        font-size: 20px;
+    }
+    #congrats-modal p {
+        font-size: 13px;
+    }
+}
+
 /* Đảm bảo 2 lớp đè khít lên nhau */
 #code-editor, #highlighting-layer, #highlighting-content {
     font-family: 'Fira Code', 'Consolas', monospace !important;
@@ -382,6 +538,7 @@ button {
     transform: translate(-50%, -50%) scale(1);
 }
 
+/* Triệt tiêu mọi khoảng cách mặc định có thể gây lệch dòng đầu */
 #highlighting-layer, 
 #highlighting-content {
     margin: 0 !important;
@@ -394,193 +551,8 @@ button {
     box-sizing: border-box !important;
 }
 
-/* ========== BỔ SUNG CẢI THIỆN RESPONSIVE & GIAO DIỆN ========== */
-/* Không xóa bất kỳ style nào ở trên, chỉ thêm mới */
-
-/* Chỉnh sidebar linh hoạt hơn trên mobile */
-@media (max-width: 768px) {
-    .sidebar {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    .sidebar nav {
-        order: 2;
-        width: 100%;
-        justify-content: space-between;
-    }
-    .sidebar nav button {
-        flex: 1;
-        justify-content: center;
-    }
-    .sidebar button:last-of-type {
-        order: 3;
-        margin-left: auto;
-    }
-    
-    /* Pane header trên ide */
-    .pane-header {
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px 12px;
-    }
-    .pane-header button {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-    #lang-tag {
-        font-size: 11px;
-        padding: 2px 8px;
-    }
-    
-    /* Terminal */
-    .terminal-body {
-        padding: 10px;
-        font-size: 12px;
-    }
-    
-    /* Card admin */
-    #admin-list .card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    #admin-list .card > div:last-child {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-    }
-    #admin-list button {
-        padding: 6px 10px;
-        font-size: 11px;
-    }
-    
-    /* Tắt hover effect lag trên mobile */
-    button:hover {
-        transform: none !important;
-    }
-}
-
-/* Modal nhỏ gọn trên màn hình rất nhỏ */
-@media (max-width: 480px) {
-    #congrats-modal {
-        width: 90%;
-        padding: 20px 15px;
-    }
-    #congrats-modal h2 {
-        font-size: 20px;
-    }
-    #congrats-modal p {
-        font-size: 13px;
-    }
-}
-
-/* Tinh chỉnh màu sắc và spacing tổng thể */
-.sidebar .btn-outline {
-    justify-content: flex-start;
-}
-.main-body h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    background: linear-gradient(135deg, #fff, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    display: inline-block;
-}
-.card {
-    background: var(--card);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    padding: 20px;
-}
-#solve-desc {
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-/* Cải thiện terminal khi có lỗi */
-.terminal-body .test-row {
-    margin-bottom: 12px;
-    border-left: 3px solid #334155;
-    padding-left: 12px;
-}
-.terminal-body .test-detail {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 4px;
-}
-/* Nút loading */
 .btn-success.loading {
     opacity: 0.7;
     cursor: wait;
     transform: none;
-}
-/* ========== SỬA GIAO DIỆN FORM SỬA BÀI (VIEW-EDITOR) ========== */
-/* Đảm bảo các test case row không bị đè chữ trên màn lớn */
-.testcase-row {
-    display: grid;
-    grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) 100px auto;
-    gap: 12px;
-    align-items: center;
-    background: rgba(255,255,255,0.03);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-}
-
-/* Nút xóa test không bị kéo giãn */
-.testcase-row button {
-    grid-column: auto !important;
-    justify-self: end;
-    white-space: nowrap;
-}
-
-/* Input trong test case row có thể xuống dòng nếu quá dài */
-.testcase-row input {
-    width: 100%;
-    min-width: 0; /* cho phép co giãn */
-    overflow-wrap: break-word;
-}
-
-/* Trên màn hình vừa (tablet, laptop nhỏ) chuyển thành 2 hàng */
-@media (max-width: 900px) {
-    .testcase-row {
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas: 
-            "input output"
-            "point delete";
-    }
-    .testcase-row input:nth-child(1) { grid-area: input; }
-    .testcase-row input:nth-child(2) { grid-area: output; }
-    .testcase-row input:nth-child(3) { grid-area: point; justify-self: start; }
-    .testcase-row button { grid-area: delete; justify-self: end; }
-}
-
-/* Trên màn hình rất nhỏ (dưới 600px) xếp dọc */
-@media (max-width: 600px) {
-    .testcase-row {
-        grid-template-columns: 1fr;
-        grid-template-areas: 
-            "input"
-            "output"
-            "point"
-            "delete";
-    }
-    .testcase-row button {
-        justify-self: stretch;
-    }
-}
-
-/* Đảm bảo IDE container không bị tràn trên màn lớn */
-.ide-container {
-    display: grid;
-    grid-template-columns: minmax(300px, 380px) 1fr;
-    gap: 20px;
-    height: calc(100vh - 100px);
-    margin-top: 15px;
-}
-
-/* Riêng view-editor, cột trái có thể co giãn */
-#view-editor .ide-left {
-    min-width: 0; /* cho phép co lại nếu cần */
 }

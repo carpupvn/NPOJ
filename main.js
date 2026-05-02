@@ -1,9 +1,8 @@
 // ================================
-// NPOJ - HỆ THỐNG CHẤM BÀI (PISTON API QUA CLOUDFLARE WORKER)
+// NPOJ - CHẤM BÀI QUA JDOODLE PROXY (CLOUDFLARE WORKER)
 // ================================
 
-// === CẤU HÌNH ===
-const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev';
+const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
 
 let problems = [];
 let activeProb = null;
@@ -149,7 +148,7 @@ function compareOutputs(received, expected) {
 }
 
 // ================================
-// 5. CHẤM BÀI QUA WORKER
+// 5. CHẤM BÀI QUA JDOODLE PROXY
 // ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -157,7 +156,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Piston API)...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (JDoodle)...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -175,21 +174,20 @@ async function runCode() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                language: activeProb.lang === "cpp" ? "cpp" : "python",
-                version: "*",
-                files: [{ content: code }],
-                stdin: test.input
-            })
+                    language: activeProb.lang,
+                    code: code,
+                    stdin: test.input
+                })
             });
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const result = await response.json();
-            const output = (result.run?.output || "").trim();
-            const stderr = (result.run?.stderr || "").trim();
+            const output = (result.output || "").trim();
+            const error = result.error || "";
 
-            if (stderr) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
+            if (error) {
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI JDoodle</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(error)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
@@ -216,7 +214,7 @@ async function runCode() {
 }
 
 // ================================
-// 6. EDITOR THÔNG MINH
+// 6. EDITOR THÔNG MINH & QUẢN TRỊ (giữ nguyên từ bản cũ)
 // ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
@@ -467,9 +465,6 @@ function showCongrats() {
     setTimeout(() => modal.classList.remove('active'), 5000);
 }
 
-// ================================
-// 9. TIỆN ÍCH
-// ================================
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -485,7 +480,7 @@ function authAdmin() {
 }
 
 // ================================
-// 10. KHỞI TẠO
+// 9. KHỞI TẠO
 // ================================
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
