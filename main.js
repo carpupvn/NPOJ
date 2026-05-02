@@ -2,7 +2,7 @@
 // NPOJ - CHẤM BÀI QUA JDOODLE PROXY (CLOUDFLARE WORKER)
 // ================================
 
-const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; 
+const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
 
 let problems = [];
 let activeProb = null;
@@ -133,18 +133,41 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. SO SÁNH KẾT QUẢ
+// 4. SO SÁNH KẾT QUẢ (NÂNG CẤP: HỖ TRỢ NHIỀU DÒNG, SỐ THỰC)
 // ================================
 function compareOutputs(received, expected) {
+    // Chuẩn hóa ký tự xuống dòng và khoảng trắng
     const recStr = received.trim().replace(/\r/g, '');
     const expStr = expected.trim().replace(/\r/g, '');
+    
+    // Trường hợp giống hệt (chuỗi)
     if (recStr === expStr) return true;
-    const recNum = parseFloat(recStr);
-    const expNum = parseFloat(expStr);
-    if (!isNaN(recNum) && !isNaN(expNum)) {
-        return Math.abs(recNum - expNum) <= 0.0001;
+    
+    // Tách thành từng dòng (hỗ trợ output nhiều dòng)
+    const recLines = recStr.split(/\n/);
+    const expLines = expStr.split(/\n/);
+    
+    // Nếu số dòng khác nhau -> sai
+    if (recLines.length !== expLines.length) return false;
+    
+    // So sánh từng dòng
+    for (let i = 0; i < recLines.length; i++) {
+        const r = recLines[i].trim();
+        const e = expLines[i].trim();
+        
+        // Nếu giống hệt thì tiếp tục
+        if (r === e) continue;
+        
+        // Thử so sánh dạng số (cho phép sai số 0.0001)
+        const rn = parseFloat(r);
+        const en = parseFloat(e);
+        if (!isNaN(rn) && !isNaN(en)) {
+            if (Math.abs(rn - en) > 0.0001) return false;
+        } else {
+            return false;
+        }
     }
-    return false;
+    return true;
 }
 
 // ================================
@@ -214,7 +237,7 @@ async function runCode() {
 }
 
 // ================================
-// 6. EDITOR THÔNG MINH & QUẢN TRỊ (giữ nguyên từ bản cũ)
+// 6. EDITOR THÔNG MINH
 // ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
@@ -309,13 +332,13 @@ function renderAdminProblems() {
         return;
     }
     container.innerHTML = problems.map(p => `
-        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:20px">
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:20px; background:var(--card); border:1px solid var(--border); border-radius:16px;">
             <div>
                 <div style="font-size:12px; color:#3b82f6;">ID: ${p.id}</div>
                 <h3 style="margin:5px 0">${escapeHtml(p.title)}</h3>
                 <small style="color:#94a3b8">${p.lang.toUpperCase()} | ${p.tests.length} testcases</small>
             </div>
-            <div style="display:flex; gap:10px">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn-outline" onclick="copyProblemJSON('${p.id}')">📋 Copy JSON</button>
                 <button class="btn-outline" onclick="editProblemWithForm('${p.id}')">✏️ Sửa</button>
                 <button class="btn-outline" onclick="deleteProblem('${p.id}')" style="color:#f43f5e">🗑 Xóa</button>
