@@ -1,5 +1,5 @@
 // ================================
-// NPOJ - CHẤM BÀI QUA JDOODLE PROXY (CLOUDFLARE WORKER)
+// NPOJ v26.05.1 - HỆ THỐNG CHẤM BÀI (JDoodle API qua Cloudflare Worker)
 // ================================
 
 const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
@@ -133,32 +133,24 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. SO SÁNH KẾT QUẢ (NÂNG CẤP: HỖ TRỢ NHIỀU DÒNG, SỐ THỰC)
+// 4. SO SÁNH KẾT QUẢ (HỖ TRỢ NHIỀU DÒNG, SAI SỐ SỐ THỰC)
 // ================================
 function compareOutputs(received, expected) {
-    // Chuẩn hóa ký tự xuống dòng và khoảng trắng
     const recStr = received.trim().replace(/\r/g, '');
     const expStr = expected.trim().replace(/\r/g, '');
     
-    // Trường hợp giống hệt (chuỗi)
     if (recStr === expStr) return true;
     
-    // Tách thành từng dòng (hỗ trợ output nhiều dòng)
     const recLines = recStr.split(/\n/);
     const expLines = expStr.split(/\n/);
     
-    // Nếu số dòng khác nhau -> sai
     if (recLines.length !== expLines.length) return false;
     
-    // So sánh từng dòng
     for (let i = 0; i < recLines.length; i++) {
         const r = recLines[i].trim();
         const e = expLines[i].trim();
-        
-        // Nếu giống hệt thì tiếp tục
         if (r === e) continue;
         
-        // Thử so sánh dạng số (cho phép sai số 0.0001)
         const rn = parseFloat(r);
         const en = parseFloat(e);
         if (!isNaN(rn) && !isNaN(en)) {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NPOJ - CarPupVN v26.05.0</title>
+    <title>NPOJ v26.05.1 - CarPupVN</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
@@ -12,16 +12,16 @@
 <body>
     <section id="view-start" class="view active" style="display: flex !important; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 9999;">
         <div class="card" style="padding: 60px 40px; width: 90%; max-width: 450px; text-align: center; background: var(--card); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-            <div style="background: var(--primary); width: 80px; height: 80px; border-radius: 20px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);">
-                <span style="font-size: 2.5rem; font-weight: 900; color: white;">N</span>
+            <!-- Thay thế logo chữ N bằng ảnh ava.png -->
+            <div style="width: 80px; height: 80px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;">
+                <img src="ava.png" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px; box-shadow: 0 0 30px rgba(59,130,246,0.3);">
             </div>
-        
-            <h1 style="font-size: 3rem; margin: 0; color: white; letter-spacing: -2px;">NPOJ</h1>
-            <p style="color: #94a3b8; margin: 10px 0 40px 0; font-size: 1.1rem;">Hệ thống lập trình hiện đại</p>
+            <h1 style="font-size: 3rem; margin: 0; color: white; letter-spacing: -2px;">NPOJ v26.05.1</h1>
+            <p style="color: #94a3b8; margin: 10px 0 40px 0; font-size: 1.1rem;">Hệ thống chấm bài hiện đại</p>
         
             <div id="login-container" style="display: flex; flex-direction: column; gap: 15px;">
                 <input type="text" id="exercise-code" class="input-modern" placeholder="Nhập mã bài tập (VD: 1000)" style="text-align: center; font-size: 1.1rem; border: 2px solid #334155;">
-                <button id="btn-access" class="btn-primary" style="padding: 16px; font-weight: bold; font-size: 1rem;" onclick="accessByCode()">VÀO HỌC NGAY</button>
+                <button id="btn-access" class="btn-primary" style="padding: 16px; font-weight: bold; font-size: 1rem;" onclick="accessByCode()">VÀO LÀM BÀI</button>
                 <div id="loader" style="display: none; margin-top: 10px;">
                     <small style="color: var(--primary)">Đang kiểm tra mã...</small>
                 </div>
@@ -34,7 +34,7 @@
 
     <div id="app-content" class="app-layout hidden">
         <aside class="sidebar">
-            <div style="font-size:1.8rem; font-weight:900; color:var(--primary); margin-bottom:40px">NPOJ</div>
+            <div style="font-size:1.8rem; font-weight:900; color:var(--primary); margin-bottom:40px">NPOJ v26.05.1</div>
             <nav style="display:flex; flex-direction:column; gap:10px">
                 <button class="btn-outline" id="nav-prob" style="justify-content:flex-start" onclick="switchView('user')">📚 Bài tập</button>
                 <button class="btn-outline" style="justify-content:flex-start" onclick="authAdmin()">🛠 Quản lý</button>
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                         <div class="editor-section">
-                            <div class="pane-header">TERMINAL</div>
+                            <div class="pane-header">CHI TIẾT KẾT QUẢ CHẤM BÀI</div>
                             <div id="terminal" class="terminal-body"></div>
                         </div>
                     </div>
@@ -132,10 +132,9 @@
     <div id="congrats-modal">
         <h2>🌟 TUYỆT VỜI! 🌟</h2>
         <p>Bạn đã đạt điểm tối đa: <b>100/100</b></p>
-        <p>Chúc mừng bạn đã chinh phục thành công thử thách này!</p>
+        <p>Chúc mừng bạn đã chinh phục thành công bài tập này!</p>
         <p style="font-size: 12px; margin-top: 20px; color: #94a3b8;">Năm mới 2026 rực rỡ nhé!</p>
         <button class="btn-primary" onclick="this.parentElement.classList.remove('active')" style="margin: 20px auto 0;">Đóng</button>
     </div>
-    <script src="https://unpkg.com/jdoodle-client@latest/dist/jdoodle-client.browser.js"></script>
 </body>
 </html>
