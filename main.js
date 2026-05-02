@@ -175,11 +175,11 @@ async function runCode() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    language: activeProb.lang === "cpp" ? "cpp" : "python",
-                    version: activeProb.lang === "cpp" ? "10.2.0" : "3.10.0",
-                    files: [{ content: code }],
-                    stdin: test.input
-                })
+                language: activeProb.lang === "cpp" ? "cpp" : "python",
+                version: "*",
+                files: [{ content: code }],
+                stdin: test.input
+            })
             });
 
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
