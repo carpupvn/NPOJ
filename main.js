@@ -1,9 +1,9 @@
 // ================================
-// NPOJ - HỆ THỐNG CHẤM BÀI DÙNG CLOUDFLARE WORKER (PISTON API)
+// NPOJ - HỆ THỐNG CHẤM BÀI (PISTON API QUA CLOUDFLARE WORKER)
 // ================================
 
-// WORKER URL (PROXY CORS)
-const WORKER_URL = 'https://npoj.npngocphuoc.workers.dev';
+// === CẤU HÌNH ===
+const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev';
 
 let problems = [];
 let activeProb = null;
@@ -11,7 +11,7 @@ let currentCode = null;
 let editingProblemId = null;
 
 // ================================
-// 1. TRUY CẬP & ĐỒNG BỘ DỮ LIỆU
+// 1. TRUY CẬP MÃ BÀI TẬP
 // ================================
 async function accessByCode(forcedCode = null) {
     const codeInput = document.getElementById('exercise-code');
@@ -94,7 +94,7 @@ function switchView(v) {
 }
 
 // ================================
-// 3. USER: HIỂN THỊ BÀI TẬP & MỞ SOLVE
+// 3. HIỂN THỊ BÀI TẬP (USER)
 // ================================
 function renderUserProblems() {
     const grid = document.getElementById('prob-grid');
@@ -134,7 +134,7 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. SO SÁNH KẾT QUẢ (GIỮ NGUYÊN LOGIC)
+// 4. SO SÁNH KẾT QUẢ
 // ================================
 function compareOutputs(received, expected) {
     const recStr = received.trim().replace(/\r/g, '');
@@ -149,7 +149,7 @@ function compareOutputs(received, expected) {
 }
 
 // ================================
-// 5. CHẤM BÀI QUA WORKER (PISTON API, KHÔNG CORS, MIỄN PHÍ)
+// 5. CHẤM BÀI QUA WORKER
 // ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -157,7 +157,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">Đang kết nối máy chủ chấm bài ...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (Piston API)...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -182,25 +182,27 @@ async function runCode() {
                 })
             });
 
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
             const result = await response.json();
             const output = (result.run?.output || "").trim();
             const stderr = (result.run?.stderr || "").trim();
 
             if (stderr) {
-                testDiv.innerHTML = `<span style="color:#ef4444">Lỗi thực thi Test ${i+1}</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI THỰC THI</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(stderr)}</pre>`;
             } else if (compareOutputs(output, test.output)) {
                 const p = parseInt(test.point) || 0;
                 earnedPoints += p;
-                testDiv.innerHTML = `<span style="color:#4ade80">Test ${i+1}: Đúng (+${p}đ)</span>`;
+                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
             } else {
-                testDiv.innerHTML = `<span style="color:#f43f5e">Test ${i+1}: Sai</span>
+                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
                     <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                        Kỳ vọng: ${escapeHtml(test.output)}<br>
-                        Nhận được: ${escapeHtml(output)}
+                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
+                        🔸 Nhận được: ${escapeHtml(output)}
                     </div>`;
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">Lỗi kết nối Test ${i+1}: ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
@@ -208,7 +210,7 @@ async function runCode() {
         await new Promise(r => setTimeout(r, 80));
     }
 
-    status.innerText = `KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
+    status.innerText = `📊 KẾT QUẢ: ${earnedPoints}/100 ĐIỂM`;
     status.style.color = earnedPoints >= 100 ? "#10b981" : "#fbbf24";
     if (earnedPoints >= 100) showCongrats();
 }
