@@ -556,3 +556,44 @@ button {
     cursor: wait;
     transform: none;
 }
+/* ========== SỬA GIAO DIỆN QUẢN TRỊ (ADMIN) TRÊN MÀN HÌNH LỚN ========== */
+/* Đảm bảo mỗi bài tập có khung riêng biệt, rõ ràng */
+#admin-list .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Phần thông tin bên trái */
+#admin-list .card > div:first-child {
+    flex: 1;
+    min-width: 180px;
+}
+
+/* Các nút bên phải */
+#admin-list .card > div:last-child {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Đảm bảo trên màn hình rất rộng các nút không bị tràn */
+@media (min-width: 1024px) {
+    #admin-list .card > div:last-child {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Hiệu ứng hover nhẹ cho từng bài */
+#admin-list .card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}

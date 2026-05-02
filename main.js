@@ -2,7 +2,7 @@
 // NPOJ - CHẤM BÀI QUA JDOODLE PROXY (CLOUDFLARE WORKER)
 // ================================
 
-const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
+const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; 
 
 let problems = [];
 let activeProb = null;
