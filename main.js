@@ -1,5 +1,5 @@
 // ================================
-// NPOJ v26.05.1 - HỆ THỐNG CHẤM BÀI (JDoodle API qua Cloudflare Worker)
+// NPOJ v26.05.3 - HỆ THỐNG CHẤM BÀI (JDoodle API qua Cloudflare Worker)
 // ================================
 
 const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
@@ -364,7 +364,6 @@ function editProblemWithForm(id) {
     switchView('editor');
 }
 
-// SỬA: dùng textarea thay vì input để nhập nhiều dòng
 function addTestUI(inputVal = '', outputVal = '', pointVal = '') {
     const container = document.getElementById('test-container');
     const testDiv = document.createElement('div');
@@ -437,7 +436,6 @@ function deleteProblem(id) {
     }
 }
 
-// THAY THẾ copyProblemJSON bằng downloadProblemJSON
 function downloadProblemJSON(id) {
     const p = problems.find(x => String(x.id) === String(id));
     if (!p) return;
@@ -452,6 +450,31 @@ function downloadProblemJSON(id) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     alert(`Đã tải xuống file JSON của "${p.title}". Bạn có thể upload lên GitHub.`);
+}
+
+// ================================
+// HÀM TẢI LIST.JSON (TẤT CẢ BÀI TẬP)
+// ================================
+function downloadListJSON() {
+    if (problems.length === 0) {
+        alert("Chưa có bài tập nào để xuất list.json.");
+        return;
+    }
+    const listData = problems.map(p => ({
+        filename: p.title,
+        title: p.title
+    }));
+    const json = JSON.stringify(listData, null, 4);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'list.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert(`Đã tải xuống list.json với ${problems.length} bài tập.`);
 }
 
 // ================================
