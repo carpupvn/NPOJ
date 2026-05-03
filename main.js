@@ -133,17 +133,18 @@ function openSolve(id) {
 }
 
 // ================================
-// 4. SO SÁNH KẾT QUẢ (HỖ TRỢ NHIỀU DÒNG, SAI SỐ SỐ THỰC)
+// 4. SO SÁNH KẾT QUẢ (HỖ TRỢ NHIỀU DÒNG, RỖNG, SỐ THỰC)
 // ================================
 function compareOutputs(received, expected) {
     const recStr = received.trim().replace(/\r/g, '');
     const expStr = expected.trim().replace(/\r/g, '');
     
+    // Cả hai đều rỗng -> đúng
+    if (recStr === "" && expStr === "") return true;
     if (recStr === expStr) return true;
     
     const recLines = recStr.split(/\n/);
     const expLines = expStr.split(/\n/);
-    
     if (recLines.length !== expLines.length) return false;
     
     for (let i = 0; i < recLines.length; i++) {
@@ -163,7 +164,7 @@ function compareOutputs(received, expected) {
 }
 
 // ================================
-// 5. CHẤM BÀI QUA JDOODLE PROXY
+// 5. CHẤM BÀI QUA JDOODLE PROXY (XỬ LÝ INPUT RỖNG)
 // ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -185,13 +186,15 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
+            // Gửi stdin là chuỗi rỗng nếu test.input rỗng
+            const stdinValue = test.input.trim() === "" ? "" : test.input;
             const response = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     language: activeProb.lang,
                     code: code,
-                    stdin: test.input
+                    stdin: stdinValue
                 })
             });
 
@@ -208,10 +211,12 @@ async function runCode() {
                 earnedPoints += p;
                 testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
             } else {
+                let expectedDisplay = test.output.trim() === "" ? "(Không in gì)" : escapeHtml(test.output);
+                let receivedDisplay = output === "" ? "(Rỗng - không in gì)" : escapeHtml(output);
                 testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
                     <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                        🔹 Kỳ vọng: ${escapeHtml(test.output)}<br>
-                        🔸 Nhận được: ${escapeHtml(output)}
+                        🔹 Kỳ vọng: ${expectedDisplay}<br>
+                        🔸 Nhận được: ${receivedDisplay}
                     </div>`;
             }
         } catch (err) {
@@ -229,7 +234,7 @@ async function runCode() {
 }
 
 // ================================
-// 6. EDITOR THÔNG MINH
+// 6. EDITOR THÔNG MINH (GIỮ NGUYÊN)
 // ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
@@ -314,7 +319,7 @@ function applyButtonEffects() {
 }
 
 // ================================
-// 7. QUẢN TRỊ (ADMIN) - DÙNG FORM
+// 7. QUẢN TRỊ (ADMIN) - DÙNG FORM (TEXTAREA CHO INPUT/OUTPUT)
 // ================================
 function renderAdminProblems() {
     const container = document.getElementById('admin-list');
@@ -385,12 +390,11 @@ function saveProblem() {
     const tests = [];
     for (let div of testDivs) {
         const inputs = div.querySelectorAll('textarea, input');
-        const inputVal = inputs[0].value.trim();
-        const outputVal = inputs[1].value.trim();
+        const inputVal = inputs[0].value;
+        const outputVal = inputs[1].value;
         const pointVal = parseInt(inputs[2].value) || 0;
-        if (inputVal !== '' && outputVal !== '') {
-            tests.push({ input: inputVal, output: outputVal, point: pointVal });
-        }
+        // Cho phép input rỗng hoặc output rỗng – vẫn lưu
+        tests.push({ input: inputVal, output: outputVal, point: pointVal });
     }
     if (!title) {
         alert("Vui lòng nhập tên bài tập");
@@ -452,9 +456,7 @@ function downloadProblemJSON(id) {
     alert(`Đã tải xuống file JSON của "${p.title}". Bạn có thể upload lên GitHub.`);
 }
 
-// ================================
-// HÀM TẢI LIST.JSON (TẤT CẢ BÀI TẬP)
-// ================================
+// HÀM TẢI LIST.JSON
 function downloadListJSON() {
     if (problems.length === 0) {
         alert("Chưa có bài tập nào để xuất list.json.");

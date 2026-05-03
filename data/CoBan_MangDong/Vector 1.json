@@ -1,0 +1,23 @@
+{
+  "id": 1777806595122,
+  "title": "Vector 1",
+  "desc": "Viết chương trình nhập vào số n và lần lượt n giá trị (lưu vào 1 vector)\nTính và in ra tổng của n giá trị đó\nInput:\nDòng 1: Số nguyên dương n (1 <= n <= 10^9)\nDòng 2: n giá trị cần tính (cách nhau bởi khoảng trắng)\nOutput:\nTổng của n số được nhập",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5\n1 -2 3 -4 2",
+      "output": "0",
+      "point": 30
+    },
+    {
+      "input": "2\n5000000000 5000000000",
+      "output": "10000000000",
+      "point": 40
+    },
+    {
+      "input": "10\n1 1 1 1 1 1 1 1 1 1",
+      "output": "10",
+      "point": 30
+    }
+  ]
+}

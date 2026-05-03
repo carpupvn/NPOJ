@@ -1,0 +1,13 @@
+{
+  "id": 1777806806224,
+  "title": "Vector 2",
+  "desc": "Nhập một vector, xóa phần tử đầu và cuối, sau đó in ra màn hình vector sau khi xóa\n\nInput:\nDòng 1: Số nguyên dương n ( 1 <= n <= 1000)\nDòng 2: n giá trị cách nhau bởi khoảng trắng\n\nOutput:\nCác giá trị khi đã lược bỏ phần tử đầu và cuối",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5\n5 10 15 20 25",
+      "output": "10 15 20",
+      "point": 80
+    }
+  ]
+}
