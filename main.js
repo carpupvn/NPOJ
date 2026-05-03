@@ -331,7 +331,7 @@ function renderAdminProblems() {
                 <small style="color:#94a3b8">${p.lang.toUpperCase()} | ${p.tests.length} testcases</small>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn-outline" onclick="copyProblemJSON('${p.id}')">📋 Copy JSON</button>
+                <button class="btn-outline" onclick="downloadProblemJSON('${p.id}')">📥 Tải JSON</button>
                 <button class="btn-outline" onclick="editProblemWithForm('${p.id}')">✏️ Sửa</button>
                 <button class="btn-outline" onclick="deleteProblem('${p.id}')" style="color:#f43f5e">🗑 Xóa</button>
             </div>
@@ -364,14 +364,15 @@ function editProblemWithForm(id) {
     switchView('editor');
 }
 
+// SỬA: dùng textarea thay vì input để nhập nhiều dòng
 function addTestUI(inputVal = '', outputVal = '', pointVal = '') {
     const container = document.getElementById('test-container');
     const testDiv = document.createElement('div');
     testDiv.className = 'testcase-row';
     testDiv.innerHTML = `
-        <input type="text" class="input-modern" placeholder="Input" value="${escapeHtml(String(inputVal))}">
-        <input type="text" class="input-modern" placeholder="Output" value="${escapeHtml(String(outputVal))}">
-        <input type="number" class="input-modern" placeholder="Điểm" value="${pointVal || '20'}">
+        <textarea class="input-modern" placeholder="Input" rows="2" style="resize:vertical;">${escapeHtml(String(inputVal))}</textarea>
+        <textarea class="input-modern" placeholder="Output" rows="2" style="resize:vertical;">${escapeHtml(String(outputVal))}</textarea>
+        <input type="number" class="input-modern" placeholder="Điểm" value="${parseInt(pointVal) || 20}">
         <button class="btn-outline" onclick="this.parentElement.remove()" style="grid-column:span 3; background:#f43f5e20">❌ Xóa test</button>
     `;
     container.appendChild(testDiv);
@@ -384,7 +385,7 @@ function saveProblem() {
     const testDivs = document.querySelectorAll('#test-container .testcase-row');
     const tests = [];
     for (let div of testDivs) {
-        const inputs = div.querySelectorAll('input');
+        const inputs = div.querySelectorAll('textarea, input');
         const inputVal = inputs[0].value.trim();
         const outputVal = inputs[1].value.trim();
         const pointVal = parseInt(inputs[2].value) || 0;
@@ -411,7 +412,7 @@ function saveProblem() {
             tests: tests
         };
         problems.push(newProb);
-        alert(`Đã tạo bài tập "${title}". Nhấn "Copy JSON" để lưu vào file.`);
+        alert(`Đã tạo bài tập "${title}". Nhấn "Tải JSON" để lưu vào file.`);
     } else {
         const index = problems.findIndex(p => p.id === editingProblemId);
         if (index !== -1) {
@@ -422,7 +423,7 @@ function saveProblem() {
                 lang: lang,
                 tests: tests
             };
-            alert(`Đã cập nhật bài tập "${title}". Nhấn "Copy JSON" để lưu thay đổi.`);
+            alert(`Đã cập nhật bài tập "${title}". Nhấn "Tải JSON" để lưu thay đổi.`);
         }
     }
     renderAdminProblems();
@@ -436,13 +437,21 @@ function deleteProblem(id) {
     }
 }
 
-function copyProblemJSON(id) {
+// THAY THẾ copyProblemJSON bằng downloadProblemJSON
+function downloadProblemJSON(id) {
     const p = problems.find(x => String(x.id) === String(id));
     if (!p) return;
     const json = JSON.stringify(p, null, 2);
-    navigator.clipboard.writeText(json).then(() => {
-        alert(`Đã copy JSON của "${p.title}" vào clipboard. Bạn có thể paste vào file .json và upload lên GitHub.`);
-    }).catch(() => alert("Không thể copy, hãy thủ công sao chép."));
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${p.title.replace(/[\\/:*?"<>|]/g, '_')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert(`Đã tải xuống file JSON của "${p.title}". Bạn có thể upload lên GitHub.`);
 }
 
 // ================================
