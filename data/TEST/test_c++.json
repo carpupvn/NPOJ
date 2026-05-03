@@ -1,0 +1,13 @@
+{
+  "id": 1777808484518,
+  "title": "test_c++",
+  "desc": "In ra màn hình \"Hello World\"",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "",
+      "output": "Hello World",
+      "point": 100
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": 1777808450857,
+  "title": "test_python",
+  "desc": "In ra màn hình \"Hello World\"",
+  "lang": "python",
+  "tests": [
+    {
+      "input": "",
+      "output": "Hello World",
+      "point": 100
+    }
+  ]
+}
