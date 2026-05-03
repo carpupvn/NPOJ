@@ -1,0 +1,23 @@
+{
+  "id": 1777804869936,
+  "title": "MangHaiChieu_3",
+  "desc": "Đối xứng: Kiểm tra xem ma trận vuông có đối xứng qua đường chéo chính hay không. (Đường chéo chính là đường thẳng đi qua các phần tử có chỉ số theo phương ngang = chỉ số theo phương dọc)\nInput:\nDòng 1: Số nguyên n (0 < n < 100)\nn dòng tiếp theo: n giá trị\nOutput:\n\"YES\" nếu là ma trận đối xứng\ncòn không thì \"NO\"",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "1\n42",
+      "output": "YES",
+      "point": 20
+    },
+    {
+      "input": "2\n1 2\n2 3",
+      "output": "YES",
+      "point": 40
+    },
+    {
+      "input": "3\n1 2 3\n4 5 6\n7 8 9",
+      "output": "NO",
+      "point": 40
+    }
+  ]
+}

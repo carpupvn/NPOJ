@@ -1,0 +1,23 @@
+{
+  "id": 1777804003335,
+  "title": "MangMotChieu",
+  "desc": "Nhập vào số nguyên n (0 <= n <= 10^5)\nLần lượt nhập vào n số\nTính và in ra trung bình cộng các giá trị có chỉ số chẵn",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5\n1 2 3 4 5",
+      "output": "1.8",
+      "point": 35
+    },
+    {
+      "input": "8\n1 2 3 4 5 6 7 8",
+      "output": "2",
+      "point": 30
+    },
+    {
+      "input": "3\n-5 -20 -76",
+      "output": "-1.66667",
+      "point": 35
+    }
+  ]
+}

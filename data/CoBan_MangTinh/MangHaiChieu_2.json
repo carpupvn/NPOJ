@@ -1,0 +1,23 @@
+{
+  "id": 1777804594496,
+  "title": "MangHaiChieu_2",
+  "desc": "Đường chéo chính: Tính tổng các phần tử nằm trên 2 đường chéo của 1 ma trận vuông\nInput:\nDòng 1: một số nguyên n (0 < n < 100)\nn dòng tiếp  theo: n giá trị cách nhau bởi khoảng trắng\nOutput:\nTổng các giá trị nằm trên 2 đường chéo của ma trận đã nhập",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "1\n5",
+      "output": "5",
+      "point": 30
+    },
+    {
+      "input": "2\n1 2\n3 4",
+      "output": "10",
+      "point": 30
+    },
+    {
+      "input": "3\n1 2 3\n4 5 6\n7 8 9",
+      "output": "25",
+      "point": 40
+    }
+  ]
+}
