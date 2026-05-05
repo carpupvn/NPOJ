@@ -1,0 +1,23 @@
+{
+  "id": 1777966383310,
+  "title": "Vector 5",
+  "desc": "Đếm số lần xuất hiện của số k trong một vector cho trước\n\nInput:\nDòng 1: số nguyên n là số phần tử của vector\nDòng 2: n số thực là các phần tủ của vector\nDòng 3:\nsố thực k\n\nOutput:\nMột số nguyên duy nhất là số lần k xuất hiện trong vector",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "6\n1.5 2.0 1.5 3.5 1.5 4.0\n1.5",
+      "output": "3",
+      "point": 30
+    },
+    {
+      "input": "4\n2.5 3.0 4.5 5.0\n1.0",
+      "output": "0",
+      "point": 40
+    },
+    {
+      "input": "3\n-1.2 0.0 2.7\n0.0",
+      "output": "1",
+      "point": 30
+    }
+  ]
+}

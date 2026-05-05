@@ -1,0 +1,23 @@
+{
+  "id": 1777965917339,
+  "title": "Vector 3",
+  "desc": "Tìm xem số nguyên x có tồn tại trong 1 vector hay không?\n\nInput:\nDòng 1: số nguyên n là số lượng phần tử của vector (1 <= n <= 100)\nDòng 2: n giá trị số nguyên của vector\nDòng 3: Giá trị x cần tìm\n\nOutput:\nChỉ số đầu tiên của vector tìm thấy x (Nếu không thấy thì in ra \"-1\")",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "6\n2 4 6 8 8 10\n8",
+      "output": "3",
+      "point": 30
+    },
+    {
+      "input": "1\n-5\n-5",
+      "output": "0",
+      "point": 30
+    },
+    {
+      "input": "4\n1 3 5 7\n9",
+      "output": "-1",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1777966158139,
+  "title": "Vector 4",
+  "desc": "Tìm giá trị lớn nhất và nhỏ nhất của một vector số thực\n\nInput:\nDòng 1: số nguyên n: số lượng phần tử của vector\nDòng 2: n giá trị của vector\n\nOutput:\nLần lượt giá trị lớn nhất và nhỏ nhất trong vector (cách nhau bằng khoảng trắng)",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "5\n3.5 -2.1 7.8 0.0 -4.2",
+      "output": "7.8 -4.2",
+      "point": 30
+    },
+    {
+      "input": "1\n6.28",
+      "output": "6.28 6.28",
+      "point": 30
+    },
+    {
+      "input": "4\n-0.001 -100.5 99.99 -0.001",
+      "output": "99.99 -100.5",
+      "point": 40
+    }
+  ]
+}
