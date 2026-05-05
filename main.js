@@ -172,7 +172,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài (JDoodle)...</div>';
+    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài...</div>';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -186,41 +186,40 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            // Gửi stdin là chuỗi rỗng nếu test.input rỗng
-            const stdinValue = test.input.trim() === "" ? "" : test.input;
             const response = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     language: activeProb.lang,
                     code: code,
-                    stdin: stdinValue
+                    stdin: test.input
                 })
             });
 
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
             const result = await response.json();
-            const output = (result.output || "").trim();
-            const error = result.error || "";
 
-            if (error) {
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: LỖI JDoodle</span><pre style="color:#ff8888; font-size:12px; margin-top:5px;">${escapeHtml(error)}</pre>`;
-            } else if (compareOutputs(output, test.output)) {
-                const p = parseInt(test.point) || 0;
-                earnedPoints += p;
-                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+            if (!result.success) {
+                // Lỗi từ worker hoặc JDoodle, hiển thị thông báo thân thiện
+                const errorMsg = result.error?.message || 'Lỗi không xác định';
+                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: ${errorMsg}</span>`;
             } else {
-                let expectedDisplay = test.output.trim() === "" ? "(Không in gì)" : escapeHtml(test.output);
-                let receivedDisplay = output === "" ? "(Rỗng - không in gì)" : escapeHtml(output);
-                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
-                    <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                        🔹 Kỳ vọng: ${expectedDisplay}<br>
-                        🔸 Nhận được: ${receivedDisplay}
-                    </div>`;
+                const output = (result.output || "").trim();
+                if (compareOutputs(output, test.output)) {
+                    const p = parseInt(test.point) || 0;
+                    earnedPoints += p;
+                    testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+                } else {
+                    let expectedDisplay = test.output.trim() === "" ? "(Không in gì)" : escapeHtml(test.output);
+                    let receivedDisplay = output === "" ? "(Rỗng - không in gì)" : escapeHtml(output);
+                    testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                        <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
+                            🔹 Kỳ vọng: ${expectedDisplay}<br>
+                            🔸 Nhận được: ${receivedDisplay}
+                        </div>`;
+                }
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: LỖI KẾT NỐI - ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: Lỗi kết nối - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
