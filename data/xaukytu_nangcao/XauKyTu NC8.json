@@ -1,0 +1,23 @@
+{
+  "id": 1778409738486,
+  "title": "XauKyTu NC8",
+  "desc": "Yêu cầu: Nhập xâu S. Tạo xâu mới bằng cách ghép S với xâu đảo ngược của S, ta được một xâu đối xứng (palindrome). In ra xâu đó.\nVí dụ: S = \"abc\" → xâu đảo \"cba\" → ghép \"abc\"+\"cba\" = \"abccba\".\nInput: Một dòng chứa xâu S.\nOutput: Xâu palindrome.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "abc",
+      "output": "abccba",
+      "point": 30
+    },
+    {
+      "input": "hello",
+      "output": "helloolleh",
+      "point": 40
+    },
+    {
+      "input": "123",
+      "output": "123321",
+      "point": 30
+    }
+  ]
+}

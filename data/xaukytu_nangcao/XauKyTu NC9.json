@@ -1,0 +1,23 @@
+{
+  "id": 1778409802512,
+  "title": "XauKyTu NC9",
+  "desc": "Yêu cầu: Nhập xâu S (gồm chữ cái, số, ký tự đặc biệt). Đếm số lượng nguyên âm (cả chữ hoa và chữ thường: a, e, i, o, u, A, E, I, O, U).\nInput: Một dòng chứa xâu S.\nOutput: Một số nguyên.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "hello",
+      "output": "2",
+      "point": 30
+    },
+    {
+      "input": "How are you?",
+      "output": "5",
+      "point": 30
+    },
+    {
+      "input": "bcdfg",
+      "output": "0",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1778409944856,
+  "title": "XauKyTu NC10",
+  "desc": "Yêu cầu: Nhập vào một xâu họ tên bị lỗi định dạng (có thể có nhiều dấu cách thừa ở đầu, cuối, giữa; chữ hoa/thường không đúng quy tắc). Hãy in ra xâu đã được chuẩn hóa:\n\nXóa dấu cách thừa (chỉ để một dấu cách giữa các từ, không có dấu cách ở đầu/cuối).\n\nChữ cái đầu mỗi từ viết hoa, các chữ còn lại trong từ viết thường.\nInput: Một dòng chứa xâu họ tên (độ dài ≤ 10^6).\nOutput: Xâu đã chuẩn hóa.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": " nGUYEn   vAn   A",
+      "output": "Nguyen Van A",
+      "point": 40
+    },
+    {
+      "input": "o le vaN bInh ",
+      "output": "O Le Van Binh",
+      "point": 40
+    },
+    {
+      "input": "nguyen THI minh HANG",
+      "output": "Nguyen Thi Minh Hang",
+      "point": 20
+    }
+  ]
+}

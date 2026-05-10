@@ -1,0 +1,23 @@
+{
+  "id": 1778409290328,
+  "title": "XauKyTu NC3",
+  "desc": "Yêu cầu: Nhập hai xâu S1 và S2 (không chứa khoảng trắng, chỉ gồm chữ cái và số). Hãy đếm số lần xuất hiện của S1 dưới dạng xâu con trong S2 (các lần xuất hiện không chồng lấn - không gối đầu).\nInput: Dòng 1: xâu S1, dòng 2: xâu S2.\nOutput: Một số nguyên là số lần xuất hiện.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "ab↵ ababab",
+      "output": "3",
+      "point": 40
+    },
+    {
+      "input": "aa↵ aaaa",
+      "output": "2",
+      "point": 40
+    },
+    {
+      "input": "abc↵ def",
+      "output": "0",
+      "point": 20
+    }
+  ]
+}

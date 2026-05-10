@@ -1,0 +1,23 @@
+{
+  "id": 1778409497045,
+  "title": "XauKyTu NC5",
+  "desc": "Yêu cầu: Nhập xâu S. Xóa tất cả các ký tự trùng lặp, chỉ giữ lại ký tự đầu tiên xuất hiện trong xâu. Thứ tự các ký tự còn lại giữ nguyên.\nInput: Một dòng chứa xâu S.\nOutput: Xâu sau khi xóa.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "aabbcc",
+      "output": "abc",
+      "point": 30
+    },
+    {
+      "input": "hello",
+      "output": "helo",
+      "point": 30
+    },
+    {
+      "input": "123123",
+      "output": "123",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": 1778409375564,
+  "title": "XauKyTu NC4",
+  "desc": "Yêu cầu: Nhập vào một xâu S (gồm chữ cái, số, dấu cách). Một từ là một dãy ký tự không chứa dấu cách, các từ cách nhau bởi một hoặc nhiều dấu cách. Hãy đếm số từ.\nInput: Một dòng chứa xâu S.\nOutput: Số từ.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "Hello World",
+      "output": "2",
+      "point": 30
+    },
+    {
+      "input": "a   b   c",
+      "output": "3",
+      "point": 30
+    },
+    {
+      "input": "one",
+      "output": "1",
+      "point": 20
+    },
+    {
+      "input": "   ",
+      "output": "0",
+      "point": 20
+    }
+  ]
+}

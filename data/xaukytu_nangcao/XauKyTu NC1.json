@@ -1,0 +1,23 @@
+{
+  "id": 1778409053325,
+  "title": "XauKyTu NC1",
+  "desc": "Yêu cầu: Nhập vào một xâu S gồm các chữ cái và dấu cách. Hãy in ra xâu mới bằng cách đảo ngược thứ tự các từ (mỗi từ là dãy ký tự không chứa dấu cách, các từ cách nhau bởi một hoặc nhiều dấu cách). Giữ nguyên số lượng dấu cách giữa các từ sau khi đảo? Nên chuẩn hóa: coi các từ cách nhau bởi một dấu cách, không có dấu cách thừa ở đầu/cuối.\nInput: Một dòng chứa xâu S (độ dài ≤ 10^6).\nOutput: Xâu sau khi đảo ngược thứ tự các từ.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "hello world python",
+      "output": "python world hello",
+      "point": 50
+    },
+    {
+      "input": "a b c",
+      "output": "c b a",
+      "point": 30
+    },
+    {
+      "input": "one",
+      "output": "one",
+      "point": 20
+    }
+  ]
+}

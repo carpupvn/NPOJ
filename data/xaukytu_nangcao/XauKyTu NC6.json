@@ -1,0 +1,23 @@
+{
+  "id": 1778409577520,
+  "title": "XauKyTu NC6",
+  "desc": "Yêu cầu: Nhập xâu St và một ký tự k. Hãy xóa tất cả các lần xuất hiện của ký tự k trong xâu St (kể cả chữ hoa/thường - phân biệt). In ra xâu kết quả.\nInput: Dòng 1: xâu St. Dòng 2: ký tự k.\nOutput: Xâu sau khi xóa.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "hello\nl",
+      "output": "heo",
+      "point": 30
+    },
+    {
+      "input": "abacabc\na",
+      "output": "bcb",
+      "point": 30
+    },
+    {
+      "input": "python\nz",
+      "output": "python",
+      "point": 40
+    }
+  ]
+}

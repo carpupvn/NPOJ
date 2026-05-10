@@ -1,0 +1,23 @@
+{
+  "id": 1778409180659,
+  "title": "XauKyTu NC2",
+  "desc": "Yêu cầu: Nhập vào một xâu S (gồm các ký tự ASCII). Hãy đếm số lần xuất hiện của từng ký tự (phân biệt chữ hoa/thường) và in ra theo thứ tự xuất hiện lần đầu tiên của ký tự trong xâu. Mỗi dòng: <ký tự> : <số lần>\nInput: Một dòng chứa xâu S.\nOutput: Các dòng mô tả tần suất.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "abca",
+      "output": "a : 2\nb : 1\nc : 1",
+      "point": 30
+    },
+    {
+      "input": "Hello",
+      "output": "H : 1\ne : 1\nl : 2\no : 1",
+      "point": 40
+    },
+    {
+      "input": "1122",
+      "output": "1 : 1\n2 : 2",
+      "point": 30
+    }
+  ]
+}

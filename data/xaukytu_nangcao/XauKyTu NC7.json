@@ -1,0 +1,23 @@
+{
+  "id": 1778409655804,
+  "title": "XauKyTu NC7",
+  "desc": "Yêu cầu: Nhập xâu S và một ký tự k. Đếm xem k xuất hiện bao nhiêu lần trong S (phân biệt chữ hoa/thường).\nInput: Dòng 1: xâu S. Dòng 2: ký tự k.\nOutput: Số lần xuất hiện.",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "banana\na",
+      "output": "3",
+      "point": 30
+    },
+    {
+      "input": "AbcAbc\nA",
+      "output": "2",
+      "point": 30
+    },
+    {
+      "input": "test\nx",
+      "output": "0",
+      "point": 40
+    }
+  ]
+}
