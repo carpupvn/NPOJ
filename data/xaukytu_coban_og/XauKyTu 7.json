@@ -1,0 +1,23 @@
+{
+  "id": 1778408088333,
+  "title": "XauKyTu 7",
+  "desc": "Nhập xâu S, xóa hết khoảng trắng trong xâu đó\n\nInput: Xâu S gồm các ký tự trong bảng ASCII\n\nOutput: Xâu S sau khi xóa hết khoảng trắng",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": " Hello World ",
+      "output": "HelloWorld",
+      "point": 50
+    },
+    {
+      "input": "Python is fun",
+      "output": "Pythonisfun",
+      "point": 20
+    },
+    {
+      "input": "HelloWorld123",
+      "output": "HelloWorld123",
+      "point": 30
+    }
+  ]
+}

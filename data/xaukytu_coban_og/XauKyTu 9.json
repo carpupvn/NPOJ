@@ -1,0 +1,23 @@
+{
+  "id": 1778408316134,
+  "title": "XauKyTu 9",
+  "desc": "Xóa hết chữ cái trong xâu\n\nInput: Xâu S gồm các ký tự trong bảng ASCII\n\nOutput: Xâu S sau khi bị xóa các hết chữ cái",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "a1b2c3!@#",
+      "output": "123!@#",
+      "point": 30
+    },
+    {
+      "input": "12345!@#$%",
+      "output": "12345!@#$%",
+      "point": 30
+    },
+    {
+      "input": "HelloWorld",
+      "output": "",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1778407886619,
+  "title": "XauKyTu 6",
+  "desc": "Nhập vào xâu S. Chuyển ký tự đầu của mỗi từ trong xâu thành chữ hoa và in ra màn hình.\n\nInput: Một xâu S gồm các chữ cái\n\nOutput: Xâu S sau khi viết hoa đầu mõi từ",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "hello world from python",
+      "output": "Hello World From Python",
+      "point": 40
+    },
+    {
+      "input": "hello",
+      "output": "Hello",
+      "point": 20
+    },
+    {
+      "input": "hEllo wOrld",
+      "output": "HEllo WOrld",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1778407571712,
+  "title": "XauKyTu 4",
+  "desc": "Nhập vào xâu S1, chuyển chữ hoa thành chữ thường rồi in ra màn hình\n\nInput: Một xâu S1 gồm các ký tự trong bảng ASCII\n\nOutput: Xâu S1 sau khi chữ hoa đổi hết thành chữ thường",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "HELLO",
+      "output": "hello",
+      "point": 30
+    },
+    {
+      "input": "Hello World 123!",
+      "output": "hello world 123!",
+      "point": 40
+    },
+    {
+      "input": "abc def",
+      "output": "abc def",
+      "point": 30
+    }
+  ]
+}

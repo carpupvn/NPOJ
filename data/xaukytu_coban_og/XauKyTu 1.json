@@ -1,0 +1,23 @@
+{
+  "id": 1778407023747,
+  "title": "XauKyTu 1",
+  "desc": "Nhập xâu s1, tạo xâu s2 gồm các chữ cái của xâu s1\n\nInput: 1 xâu s1 gồm các ký tự trong bảng ASCII\n\nOutput: 1 xâu s2 chỉ gồm các chữ cái từ xâu s1",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "abc321de",
+      "output": "abcde",
+      "point": 30
+    },
+    {
+      "input": "abc def",
+      "output": "abcdef",
+      "point": 30
+    },
+    {
+      "input": "AbCdEf 123987 ___***",
+      "output": "AbCdEf",
+      "point": 40
+    }
+  ]
+}

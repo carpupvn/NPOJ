@@ -1,0 +1,23 @@
+{
+  "id": 1778408200884,
+  "title": "XauKyTu 8",
+  "desc": "Xóa hết chữ số trong xâu\n\nInput: Xâu S gồm các ký tự trong bảng ASCII\n\nOuput: Xâu S sau khi bị xóa hết các chữ số",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "1a2b3c4",
+      "output": "abc",
+      "point": 30
+    },
+    {
+      "input": "Hello World!",
+      "output": "Hello World!",
+      "point": 30
+    },
+    {
+      "input": "1234567890",
+      "output": "",
+      "point": 40
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": 1778407433638,
+  "title": "XauKyTu 3",
+  "desc": "Nhập xâu S. Tìm ra có bao nhiêu chữ cái, bao nhiêu chữ số và in ra kết quả\n\nInput: 1 xâu S gồm các ký tự trong bảng ASCII\n\nOutput:\nDòng 1: Số lượng chữ cái trong xâu\nDòng 2: Số lượng chữ số trong xâu",
+  "lang": "cpp",
+  "tests": [
+    {
+      "input": "Hello123! World",
+      "output": "10\n3",
+      "point": 40
+    },
+    {
+      "input": "abcdefGHIJ",
+      "output": "10\n0",
+      "point": 30
+    },
+    {
+      "input": "12345!@#$%",
+      "output": "0\n5",
+      "point": 30
+    }
+  ]
+}
