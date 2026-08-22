@@ -1,5 +1,7 @@
 // ================================
-// NPOJ v26.05.3 - HỆ THỐNG CHẤM BÀI (JDoodle API qua Cloudflare Worker)
+// NPOJ v26.05.3 - HỆ THỐNG CHẤM BÀI
+// Python  -> chạy trực tiếp trong trình duyệt bằng Skulpt (không cần API)
+// C++     -> vẫn chấm qua JDoodle API thông qua Cloudflare Worker (giữ nguyên)
 // ================================
 
 const WORKER_URL = 'https://npoj-free.npngocphuoc.workers.dev'; // URL worker của bạn
@@ -164,7 +166,45 @@ function compareOutputs(received, expected) {
 }
 
 // ================================
-// 5. CHẤM BÀI QUA JDOODLE PROXY (XỬ LÝ INPUT RỖNG)
+// 5. CHẠY PYTHON TRỰC TIẾP TRONG TRÌNH DUYỆT (SKULPT - KHÔNG CẦN API)
+// ================================
+function runPythonLocal(code, stdin) {
+    return new Promise((resolve, reject) => {
+        try {
+            let outputBuffer = "";
+            const inputLines = (stdin || "").split("\n");
+            let inputIndex = 0;
+
+            function builtinRead(x) {
+                if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+                    throw "File not found: '" + x + "'";
+                }
+                return Sk.builtinFiles["files"][x];
+            }
+
+            Sk.configure({
+                output: (text) => { outputBuffer += text; },
+                read: builtinRead,
+                // Mỗi lần code Python gọi input(), trả về dòng tiếp theo trong stdin của test case
+                inputfun: () => (inputIndex < inputLines.length ? inputLines[inputIndex++] : ""),
+                inputfunTakesPrompt: true,
+                execLimit: 8000, // chặn vòng lặp vô hạn sau 8 giây
+                __future__: Sk.python3
+            });
+
+            Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true))
+                .then(
+                    () => resolve(outputBuffer),
+                    (err) => reject(new Error(err.toString()))
+                );
+        } catch (err) {
+            reject(new Error(err.toString()));
+        }
+    });
+}
+
+// ================================
+// 6. CHẤM BÀI (PYTHON: LOCAL SKULPT | C++: JDOODLE QUA WORKER)
 // ================================
 async function runCode() {
     const code = document.getElementById('code-editor').value;
@@ -172,7 +212,7 @@ async function runCode() {
     const term = document.getElementById('terminal');
     if (!activeProb) return;
 
-    term.innerHTML = '<div style="color:#60a5fa">⏳ Đang kết nối máy chủ chấm bài...</div>';
+    term.innerHTML = '';
     status.innerText = "ĐANG CHẤM...";
     status.style.color = "#fbbf24";
 
@@ -186,40 +226,44 @@ async function runCode() {
         testDiv.style.paddingLeft = '10px';
 
         try {
-            const response = await fetch(WORKER_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    language: activeProb.lang,
-                    code: code,
-                    stdin: test.input
-                })
-            });
+            let output;
 
-            const result = await response.json();
-
-            if (!result.success) {
-                // Lỗi từ worker hoặc JDoodle, hiển thị thông báo thân thiện
-                const errorMsg = result.error?.message || 'Lỗi không xác định';
-                testDiv.innerHTML = `<span style="color:#ef4444">❌ Test ${i+1}: ${errorMsg}</span>`;
+            if (activeProb.lang === 'python') {
+                // Chạy trực tiếp trong trình duyệt, không gọi API
+                output = (await runPythonLocal(code, test.input)).trim();
             } else {
-                const output = (result.output || "").trim();
-                if (compareOutputs(output, test.output)) {
-                    const p = parseInt(test.point) || 0;
-                    earnedPoints += p;
-                    testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
-                } else {
-                    let expectedDisplay = test.output.trim() === "" ? "(Không in gì)" : escapeHtml(test.output);
-                    let receivedDisplay = output === "" ? "(Rỗng - không in gì)" : escapeHtml(output);
-                    testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
-                        <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
-                            🔹 Kỳ vọng: ${expectedDisplay}<br>
-                            🔸 Nhận được: ${receivedDisplay}
-                        </div>`;
+                // C++ (và các ngôn ngữ khác): vẫn chấm qua Worker/JDoodle như cũ
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        language: activeProb.lang,
+                        code: code,
+                        stdin: test.input
+                    })
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.error?.message || 'Lỗi không xác định từ máy chủ chấm bài');
                 }
+                output = (result.output || "").trim();
+            }
+
+            if (compareOutputs(output, test.output)) {
+                const p = parseInt(test.point) || 0;
+                earnedPoints += p;
+                testDiv.innerHTML = `<span style="color:#4ade80">✅ Test ${i+1}: ĐÚNG (+${p}đ)</span>`;
+            } else {
+                let expectedDisplay = test.output.trim() === "" ? "(Không in gì)" : escapeHtml(test.output);
+                let receivedDisplay = output === "" ? "(Rỗng - không in gì)" : escapeHtml(output);
+                testDiv.innerHTML = `<span style="color:#f43f5e">❌ Test ${i+1}: SAI</span>
+                    <div style="color:#94a3b8; font-size:12px; margin-top:5px;">
+                        🔹 Kỳ vọng: ${expectedDisplay}<br>
+                        🔸 Nhận được: ${receivedDisplay}
+                    </div>`;
             }
         } catch (err) {
-            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: Lỗi kết nối - ${escapeHtml(err.message)}</span>`;
+            testDiv.innerHTML = `<span style="color:#ef4444">💥 Test ${i+1}: Lỗi - ${escapeHtml(err.message)}</span>`;
         }
 
         term.appendChild(testDiv);
@@ -233,7 +277,7 @@ async function runCode() {
 }
 
 // ================================
-// 6. EDITOR THÔNG MINH (GIỮ NGUYÊN)
+// 7. EDITOR THÔNG MINH (GIỮ NGUYÊN)
 // ================================
 function updateHighlighting() {
     const editor = document.getElementById('code-editor');
@@ -318,7 +362,7 @@ function applyButtonEffects() {
 }
 
 // ================================
-// 7. QUẢN TRỊ (ADMIN) - DÙNG FORM (TEXTAREA CHO INPUT/OUTPUT)
+// 8. QUẢN TRỊ (ADMIN) - DÙNG FORM (TEXTAREA CHO INPUT/OUTPUT)
 // ================================
 function renderAdminProblems() {
     const container = document.getElementById('admin-list');
@@ -479,7 +523,7 @@ function downloadListJSON() {
 }
 
 // ================================
-// 8. PHÁO HOA & CHÚC MỪNG
+// 9. PHÁO HOA & CHÚC MỪNG
 // ================================
 function launchFireworks() {
     const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#fff', '#ff4500'];
@@ -528,7 +572,7 @@ function authAdmin() {
 }
 
 // ================================
-// 9. KHỞI TẠO
+// 10. KHỞI TẠO
 // ================================
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
