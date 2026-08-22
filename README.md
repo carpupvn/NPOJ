@@ -2,6 +2,6 @@
 
 Hệ thống chấm bài NPOJ v26.05.3 - (Small Project by CarPup)
 
-Mọi thắc mắc vui lòng liên hệ: 0936974180 - npngocphuoc@gmail.com
+Mọi thắc mắc vui lòng liên hệ: 0862422944 - npngocphuoc@gmail.com
 
 *Hệ thống đang sử dụng JDOODLE API (through CLOUDFARE WORKER)
